@@ -8,16 +8,14 @@
     "dev": "nodemon src/index.js"
   },
   "dependencies": {
-    "amazon-cognito-identity-js": "^6.3.7",
-    "aws-sdk": "^1.18.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.490.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-validator": "^7.0.1",
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
-    "jwks-rsa": "^3.1.0",
-    "pg": "^8.11.3"
+    "jwks-rsa": "^3.1.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

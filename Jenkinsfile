@@ -112,6 +112,14 @@ pipeline {
                 script {
                     sh """
                         docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+                        -v \${WORKSPACE}:/reports \
+                        aquasec/trivy:latest image --severity HIGH,CRITICAL \
+                        --exit-code 0 \
+                        --format json \
+                        --output /reports/trivy-backend-report.json \
+                        ${SERVICE_NAME}-backend:${IMAGE_TAG}
+                        
+                        docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
                         aquasec/trivy:latest image --severity HIGH,CRITICAL \
                         --exit-code 0 \
                         --no-progress \
@@ -128,6 +136,14 @@ pipeline {
             steps {
                 script {
                     sh """
+                        docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+                        -v \${WORKSPACE}:/reports \
+                        aquasec/trivy:latest image --severity HIGH,CRITICAL \
+                        --exit-code 0 \
+                        --format json \
+                        --output /reports/trivy-frontend-report.json \
+                        ${SERVICE_NAME}-frontend:${IMAGE_TAG}
+                        
                         docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
                         aquasec/trivy:latest image --severity HIGH,CRITICAL \
                         --exit-code 0 \
@@ -188,6 +204,7 @@ pipeline {
             echo "Pipeline completed successfully for ${params.ENVIRONMENT} environment"
             echo "Backend Image: ${ECR_REGISTRY}/${ECR_REPO}:${SERVICE_NAME}-backend-${IMAGE_TAG}"
             echo "Frontend Image: ${ECR_REGISTRY}/${ECR_REPO}:${SERVICE_NAME}-frontend-${IMAGE_TAG}"
+            archiveArtifacts artifacts: 'trivy-*-report.json', allowEmptyArchive: true
         }
         failure {
             echo "Pipeline failed for ${params.ENVIRONMENT} environment"

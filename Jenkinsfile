@@ -143,8 +143,11 @@ pipeline {
                 script {
                     withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
                         sh """
-                            aws ecr get-login-password --region ${AWS_REGION} | \
-                            docker login --username AWS --password-stdin ${ECR_REGISTRY}
+                            export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+                            export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+                            export AWS_DEFAULT_REGION=${AWS_REGION}
+                            
+                            aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}
                             
                             docker tag ${SERVICE_NAME}-backend:${IMAGE_TAG} ${ECR_REGISTRY}/${ECR_REPO}:${SERVICE_NAME}-backend-${IMAGE_TAG}
                             docker tag ${SERVICE_NAME}-backend:${IMAGE_TAG} ${ECR_REGISTRY}/${ECR_REPO}:${SERVICE_NAME}-backend-latest

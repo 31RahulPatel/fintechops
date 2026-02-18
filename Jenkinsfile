@@ -68,6 +68,9 @@ pipeline {
         }
         
         stage('Quality Gate') {
+            when {
+                expression { params.SERVICE == 'auth-service' || params.SERVICE == 'all' }
+            }
             steps {
                 timeout(time: 5, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
@@ -118,6 +121,9 @@ pipeline {
         }
         
         stage('Trivy Scan - Frontend') {
+            when {
+                expression { params.SERVICE == 'auth-service' || params.SERVICE == 'all' }
+            }
             steps {
                 script {
                     sh """
@@ -142,12 +148,16 @@ pipeline {
                             docker tag ${SERVICE_NAME}-backend:${IMAGE_TAG} ${ECR_REGISTRY}/${ECR_REPO}:${SERVICE_NAME}-backend-latest
                             docker push ${ECR_REGISTRY}/${ECR_REPO}:${SERVICE_NAME}-backend-${IMAGE_TAG}
                             docker push ${ECR_REGISTRY}/${ECR_REPO}:${SERVICE_NAME}-backend-latest
-                            
-                            docker tag ${SERVICE_NAME}-frontend:${IMAGE_TAG} ${ECR_REGISTRY}/${ECR_REPO}:${SERVICE_NAME}-frontend-${IMAGE_TAG}
-                            docker tag ${SERVICE_NAME}-frontend:${IMAGE_TAG} ${ECR_REGISTRY}/${ECR_REPO}:${SERVICE_NAME}-frontend-latest
-                            docker push ${ECR_REGISTRY}/${ECR_REPO}:${SERVICE_NAME}-frontend-${IMAGE_TAG}
-                            docker push ${ECR_REGISTRY}/${ECR_REPO}:${SERVICE_NAME}-frontend-latest
                         """
+                        
+                        if (params.SERVICE == 'auth-service' || params.SERVICE == 'all') {
+                            sh """
+                                docker tag ${SERVICE_NAME}-frontend:${IMAGE_TAG} ${ECR_REGISTRY}/${ECR_REPO}:${SERVICE_NAME}-frontend-${IMAGE_TAG}
+                                docker tag ${SERVICE_NAME}-frontend:${IMAGE_TAG} ${ECR_REGISTRY}/${ECR_REPO}:${SERVICE_NAME}-frontend-latest
+                                docker push ${ECR_REGISTRY}/${ECR_REPO}:${SERVICE_NAME}-frontend-${IMAGE_TAG}
+                                docker push ${ECR_REGISTRY}/${ECR_REPO}:${SERVICE_NAME}-frontend-latest
+                            """
+                        }
                     }
                 }
             }

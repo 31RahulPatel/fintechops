@@ -92,8 +92,19 @@ See `ECR_DESIGN.md` for tagging strategy.
 2. Name: `fintechops-cicd`
 3. Check "This project is parameterized"
 4. Add parameters:
-   - Choice Parameter: `ENVIRONMENT` with choices: dev, prod (one per line, no quotes)
-   - Choice Parameter: `SERVICE` with choices: auth-service, payment-service, all (one per line, no quotes)
+   - Choice Parameter Name: `ENVIRONMENT`
+     - Choices (enter each on NEW LINE, NO COMMAS):
+       ```
+       dev
+       prod
+       ```
+   - Choice Parameter Name: `SERVICE`
+     - Choices (enter each on NEW LINE, NO COMMAS):
+       ```
+       auth-service
+       payment-service
+       all
+       ```
 5. Pipeline Definition: **Pipeline script from SCM**
 6. SCM: **Git**
 7. Repository URL: Your Git repo URL (e.g., `https://github.com/username/Fintechops.git`)

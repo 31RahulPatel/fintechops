@@ -100,7 +100,9 @@ pipeline {
                     script {
                         sh """
                             docker build -t ${SERVICE_NAME}-frontend:${IMAGE_TAG} \
-                            --build-arg REACT_APP_ENV=${params.ENVIRONMENT} .
+                            --build-arg REACT_APP_COGNITO_USER_POOL_ID=us-east-1_LpJTIudpS \
+                            --build-arg REACT_APP_COGNITO_CLIENT_ID=6joqm59k47njd251dfrt25gvef \
+                            --build-arg REACT_APP_API_URL=http://auth-backend:5000/api .
                         """
                     }
                 }

@@ -1,8 +1,8 @@
-const AWS = require('aws-sdk');
+const { CognitoIdentityProviderClient } = require('@aws-sdk/client-cognito-identity-provider');
 
-AWS.config.update({ region: process.env.AWS_REGION });
-
-const cognito = new AWS.CognitoIdentityServiceProvider();
+const cognito = new CognitoIdentityProviderClient({ 
+  region: process.env.AWS_REGION 
+});
 
 module.exports = {
   cognito,

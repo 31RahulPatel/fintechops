@@ -1,0 +1,51 @@
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+build/
+dist/
+out/
+
+# Logs
+logs/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.tar
+
+# Test coverage
+coverage/
+
+# Temporary files
+*.tmp
+.cache/
+
+# Jenkins
+.jenkins/
+
+# AWS
+.aws/
+
+# Secrets
+*.pem
+*.key
+credentials

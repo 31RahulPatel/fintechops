@@ -175,6 +175,9 @@ pipeline {
                     docker rmi ${SERVICE_NAME}-frontend:${IMAGE_TAG} || true
                     docker rmi ${ECR_REGISTRY}/${ECR_REPO}:${SERVICE_NAME}-backend-${IMAGE_TAG} || true
                     docker rmi ${ECR_REGISTRY}/${ECR_REPO}:${SERVICE_NAME}-frontend-${IMAGE_TAG} || true
+                    docker rmi ${ECR_REGISTRY}/${ECR_REPO}:${SERVICE_NAME}-backend-latest || true
+                    docker rmi ${ECR_REGISTRY}/${ECR_REPO}:${SERVICE_NAME}-frontend-latest || true
+                    docker image prune -f --filter "label!=keep" --filter "dangling=true"
                 """
             }
         }

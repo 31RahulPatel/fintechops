@@ -1,5 +1,5 @@
 def getServiceList() {
-    return ['all', 'auth-service', 'market-data-service', 'news-service']
+    return ['all', 'auth-service', 'frontend', 'market-data-service', 'news-service']
 }
 
 pipeline {
@@ -29,10 +29,7 @@ pipeline {
                     echo "🚀 Deployment: ${params.SERVICE} → ${params.ENVIRONMENT}"
                     
                     if (params.SERVICE == 'all') {
-                        env.SERVICES = sh(
-                            returnStdout: true,
-                            script: 'ls -d *-service/ 2>/dev/null | sed "s/\\///" | tr "\\n" " " || echo "auth-service market-data-service news-service"'
-                        ).trim()
+                        env.SERVICES = 'auth-service frontend market-data-service news-service'
                     } else {
                         env.SERVICES = params.SERVICE
                     }
@@ -104,9 +101,10 @@ pipeline {
                             }
                         }
                         
-                        // Frontend
-                        if (fileExists("${service}/frontend/Dockerfile")) {
-                            dir("${service}/frontend") {
+                        // Frontend (standalone or nested)
+                        def frontendPath = service == 'frontend' ? "${service}" : "${service}/frontend"
+                        if (fileExists("${frontendPath}/Dockerfile")) {
+                            dir("${frontendPath}") {
                                 if (!params.SKIP_TESTS && fileExists('src')) {
                                     try {
                                         def scannerHome = tool 'SonarScanner'

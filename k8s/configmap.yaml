@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: fintechops
+data:
+  DB_HOST: "infrafin-db.cy1oi4esixnv.us-east-1.rds.amazonaws.com"
+  DB_PORT: "5432"
+  DB_NAME: "fintechops"
+  AUTH_SERVICE_URL: "http://auth-service:3000"
+  MARKET_SERVICE_URL: "http://market-data-service:4000"
+  NEWS_SERVICE_URL: "http://news-service:5000"
+  CALCULATOR_SERVICE_URL: "http://calculator-service:6000"

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: {{ .Values.global.namespace }}
+data:
+  DB_HOST: {{ .Values.database.host | quote }}
+  DB_PORT: {{ .Values.database.port | quote }}
+  DB_NAME: {{ .Values.database.name | quote }}
+  AUTH_SERVICE_URL: "http://auth-service:{{ .Values.authService.port }}"
+  MARKET_SERVICE_URL: "http://market-data-service:{{ .Values.marketDataService.port }}"
+  NEWS_SERVICE_URL: "http://news-service:{{ .Values.newsService.port }}"
+  CALCULATOR_SERVICE_URL: "http://calculator-service:{{ .Values.calculatorService.port }}"

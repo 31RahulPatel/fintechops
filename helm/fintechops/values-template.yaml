@@ -1,0 +1,95 @@
+global:
+  namespace: fintechops
+  ecrRegistry: 196390795701.dkr.ecr.us-east-1.amazonaws.com
+  
+database:
+  host: infrafin-db.cy1oi4esixnv.us-east-1.rds.amazonaws.com
+  port: 5432
+  name: fintechops
+  user: postgres
+  password: <YOUR_RDS_PASSWORD>
+
+cognito:
+  userPoolId: <YOUR_COGNITO_POOL_ID>
+  clientId: <YOUR_COGNITO_CLIENT_ID>
+  region: us-east-1
+
+jwtSecret: <YOUR_JWT_SECRET>
+
+authService:
+  enabled: true
+  replicas: 2
+  image:
+    tag: latest
+  port: 3000
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 250m
+    limits:
+      memory: 512Mi
+      cpu: 500m
+
+marketDataService:
+  enabled: true
+  replicas: 2
+  image:
+    tag: latest
+  port: 4000
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 250m
+    limits:
+      memory: 512Mi
+      cpu: 500m
+
+newsService:
+  enabled: true
+  replicas: 2
+  image:
+    tag: latest
+  port: 5000
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 250m
+    limits:
+      memory: 512Mi
+      cpu: 500m
+
+calculatorService:
+  enabled: true
+  replicas: 2
+  image:
+    tag: latest
+  port: 6000
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 250m
+    limits:
+      memory: 512Mi
+      cpu: 500m
+
+frontend:
+  enabled: true
+  replicas: 2
+  image:
+    tag: latest
+  port: 80
+  resources:
+    requests:
+      memory: 128Mi
+      cpu: 100m
+    limits:
+      memory: 256Mi
+      cpu: 200m
+
+ingress:
+  enabled: true
+  className: alb
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'

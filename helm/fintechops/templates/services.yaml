@@ -1,0 +1,190 @@
+{{- if .Values.marketDataService.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: market-data-service
+  namespace: {{ .Values.global.namespace }}
+spec:
+  replicas: {{ .Values.marketDataService.replicas }}
+  selector:
+    matchLabels:
+      app: market-data-service
+  template:
+    metadata:
+      labels:
+        app: market-data-service
+    spec:
+      containers:
+      - name: market-data-service
+        image: {{ .Values.global.ecrRegistry }}/market-data-service:{{ .Values.marketDataService.image.tag }}
+        ports:
+        - containerPort: {{ .Values.marketDataService.port }}
+        env:
+        - name: PORT
+          value: {{ .Values.marketDataService.port | quote }}
+        resources:
+          {{- toYaml .Values.marketDataService.resources | nindent 10 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: market-data-service
+  namespace: {{ .Values.global.namespace }}
+spec:
+  selector:
+    app: market-data-service
+  ports:
+  - port: {{ .Values.marketDataService.port }}
+    targetPort: {{ .Values.marketDataService.port }}
+  type: ClusterIP
+{{- end }}
+---
+{{- if .Values.newsService.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: news-service
+  namespace: {{ .Values.global.namespace }}
+spec:
+  replicas: {{ .Values.newsService.replicas }}
+  selector:
+    matchLabels:
+      app: news-service
+  template:
+    metadata:
+      labels:
+        app: news-service
+    spec:
+      containers:
+      - name: news-service
+        image: {{ .Values.global.ecrRegistry }}/news-service:{{ .Values.newsService.image.tag }}
+        ports:
+        - containerPort: {{ .Values.newsService.port }}
+        env:
+        - name: PORT
+          value: {{ .Values.newsService.port | quote }}
+        resources:
+          {{- toYaml .Values.newsService.resources | nindent 10 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: news-service
+  namespace: {{ .Values.global.namespace }}
+spec:
+  selector:
+    app: news-service
+  ports:
+  - port: {{ .Values.newsService.port }}
+    targetPort: {{ .Values.newsService.port }}
+  type: ClusterIP
+{{- end }}
+---
+{{- if .Values.calculatorService.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: calculator-service
+  namespace: {{ .Values.global.namespace }}
+spec:
+  replicas: {{ .Values.calculatorService.replicas }}
+  selector:
+    matchLabels:
+      app: calculator-service
+  template:
+    metadata:
+      labels:
+        app: calculator-service
+    spec:
+      containers:
+      - name: calculator-service
+        image: {{ .Values.global.ecrRegistry }}/calculator-service:{{ .Values.calculatorService.image.tag }}
+        ports:
+        - containerPort: {{ .Values.calculatorService.port }}
+        env:
+        - name: PORT
+          value: {{ .Values.calculatorService.port | quote }}
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: DB_HOST
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: DB_PORT
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: DB_NAME
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: DB_USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: DB_PASSWORD
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: JWT_SECRET
+        resources:
+          {{- toYaml .Values.calculatorService.resources | nindent 10 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: calculator-service
+  namespace: {{ .Values.global.namespace }}
+spec:
+  selector:
+    app: calculator-service
+  ports:
+  - port: {{ .Values.calculatorService.port }}
+    targetPort: {{ .Values.calculatorService.port }}
+  type: ClusterIP
+{{- end }}
+---
+{{- if .Values.frontend.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: {{ .Values.global.namespace }}
+spec:
+  replicas: {{ .Values.frontend.replicas }}
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: {{ .Values.global.ecrRegistry }}/frontend:{{ .Values.frontend.image.tag }}
+        ports:
+        - containerPort: {{ .Values.frontend.port }}
+        resources:
+          {{- toYaml .Values.frontend.resources | nindent 10 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: {{ .Values.global.namespace }}
+spec:
+  selector:
+    app: frontend
+  ports:
+  - port: {{ .Values.frontend.port }}
+    targetPort: {{ .Values.frontend.port }}
+  type: ClusterIP
+{{- end }}

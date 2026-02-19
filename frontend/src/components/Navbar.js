@@ -37,6 +37,7 @@ const Navbar = () => {
           <li><Link to="/home" onClick={closeMenu}>Home</Link></li>
           <li><Link to="/markets" onClick={closeMenu}>Markets</Link></li>
           <li><Link to="/news" onClick={closeMenu}>News</Link></li>
+          <li><Link to="/calculators" onClick={closeMenu}>Calculators</Link></li>
           <li><Link to="/portfolio" onClick={closeMenu}>Portfolio</Link></li>
           <li><Link to="/watchlist" onClick={closeMenu}>Watchlist</Link></li>
           <li><Link to="/premium" className="premium-link" onClick={closeMenu}>Premium</Link></li>

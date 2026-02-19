@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: news-service
+  namespace: fintechops
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: news-service
+  template:
+    metadata:
+      labels:
+        app: news-service
+    spec:
+      containers:
+      - name: news-service
+        image: 196390795701.dkr.ecr.us-east-1.amazonaws.com/news-service:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: PORT
+          value: "5000"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: news-service
+  namespace: fintechops
+spec:
+  selector:
+    app: news-service
+  ports:
+  - port: 5000
+    targetPort: 5000
+  type: ClusterIP

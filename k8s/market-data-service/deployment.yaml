@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: market-data-service
+  namespace: fintechops
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: market-data-service
+  template:
+    metadata:
+      labels:
+        app: market-data-service
+    spec:
+      containers:
+      - name: market-data-service
+        image: 196390795701.dkr.ecr.us-east-1.amazonaws.com/market-data-service:latest
+        ports:
+        - containerPort: 4000
+        env:
+        - name: PORT
+          value: "4000"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: market-data-service
+  namespace: fintechops
+spec:
+  selector:
+    app: market-data-service
+  ports:
+  - port: 4000
+    targetPort: 4000
+  type: ClusterIP

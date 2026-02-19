@@ -6,6 +6,7 @@ import Confirm from './components/Confirm';
 import Dashboard from './components/Dashboard';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
+import Calculators from './pages/Calculators';
 import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 
@@ -35,6 +36,12 @@ function App() {
             <ProtectedRoute>
               <Navbar />
               <div style={{padding: '100px 20px', textAlign: 'center'}}>News Page - Coming Soon</div>
+            </ProtectedRoute>
+          } />
+          <Route path="/calculators" element={
+            <ProtectedRoute>
+              <Navbar />
+              <Calculators />
             </ProtectedRoute>
           } />
           <Route path="/portfolio" element={

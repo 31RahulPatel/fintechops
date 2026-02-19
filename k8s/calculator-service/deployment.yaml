@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: calculator-service
+  namespace: fintechops
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: calculator-service
+  template:
+    metadata:
+      labels:
+        app: calculator-service
+    spec:
+      containers:
+      - name: calculator-service
+        image: 196390795701.dkr.ecr.us-east-1.amazonaws.com/calculator-service:latest
+        ports:
+        - containerPort: 6000
+        env:
+        - name: PORT
+          value: "6000"
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: DB_HOST
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: DB_PORT
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: DB_NAME
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: DB_USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: DB_PASSWORD
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: JWT_SECRET
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: calculator-service
+  namespace: fintechops
+spec:
+  selector:
+    app: calculator-service
+  ports:
+  - port: 6000
+    targetPort: 6000
+  type: ClusterIP

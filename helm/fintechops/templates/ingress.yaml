@@ -1,0 +1,51 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fintechops-ingress
+  namespace: {{ .Values.global.namespace }}
+  annotations:
+    {{- range $key, $value := .Values.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend
+            port:
+              number: {{ .Values.frontend.port }}
+      - path: /api/auth
+        pathType: Prefix
+        backend:
+          service:
+            name: auth-service
+            port:
+              number: {{ .Values.authService.port }}
+      - path: /api/market
+        pathType: Prefix
+        backend:
+          service:
+            name: market-data-service
+            port:
+              number: {{ .Values.marketDataService.port }}
+      - path: /api/news
+        pathType: Prefix
+        backend:
+          service:
+            name: news-service
+            port:
+              number: {{ .Values.newsService.port }}
+      - path: /api/calculators
+        pathType: Prefix
+        backend:
+          service:
+            name: calculator-service
+            port:
+              number: {{ .Values.calculatorService.port }}
+{{- end }}

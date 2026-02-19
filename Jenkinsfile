@@ -3,7 +3,7 @@ pipeline {
     
     parameters {
         choice(name: 'ENVIRONMENT', choices: ['dev', 'staging', 'prod'], description: 'Deployment environment')
-        string(name: 'SERVICE', defaultValue: 'all', description: 'Service name or "all" for all services')
+        choice(name: 'SERVICE', choices: getServiceList(), description: 'Select service to deploy')
         booleanParam(name: 'SKIP_TESTS', defaultValue: false, description: 'Skip quality checks')
     }
     
@@ -14,6 +14,22 @@ pipeline {
         ECR_REPO = "fintechops-${params.ENVIRONMENT}"
         GIT_COMMIT_SHORT = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
         IMAGE_TAG = "${GIT_COMMIT_SHORT}-${BUILD_NUMBER}"
+    }
+    
+    @NonCPS
+    def getServiceList() {
+        def services = ['all']
+        try {
+            def workspace = new File('.')
+            workspace.eachDir { dir ->
+                if (dir.name.endsWith('-service')) {
+                    services.add(dir.name)
+                }
+            }
+        } catch (Exception e) {
+            services.addAll(['auth-service', 'market-data-service', 'news-service'])
+        }
+        return services
     }
     
     stages {

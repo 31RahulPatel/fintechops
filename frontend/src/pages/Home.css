@@ -109,7 +109,8 @@
 
 .main-content {
   width: 100%;
-  margin: 0;
+  max-width: 1400px;
+  margin: 0 auto;
   padding: 40px 30px;
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -407,7 +408,8 @@
 
 .market-overview {
   width: 100%;
-  margin: 0;
+  max-width: 1400px;
+  margin: 0 auto;
   padding: 0 30px 40px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -477,7 +479,8 @@
 
 .ipo-section {
   width: 100%;
-  margin: 0;
+  max-width: 1400px;
+  margin: 0 auto;
   padding: 0 30px 40px;
   box-sizing: border-box;
   animation: fadeInUp 1s ease;

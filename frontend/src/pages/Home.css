@@ -113,7 +113,7 @@
   margin: 0 auto;
   padding: 40px 30px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 60% 40%;
   gap: 30px;
   box-sizing: border-box;
 }

@@ -10,47 +10,56 @@ const Navbar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('authToken');
+    setUserMenuOpen(false);
     navigate('/login');
+  };
+
+  const closeMenu = () => {
+    setMenuOpen(false);
+  };
+
+  const closeUserMenu = () => {
+    setUserMenuOpen(false);
   };
 
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        <Link to="/home" className="navbar-logo">FintechOps</Link>
+        <Link to="/home" className="navbar-logo" onClick={closeMenu}>FintechOps</Link>
         
-        <button className="navbar-toggle" onClick={() => setMenuOpen(!menuOpen)}>
+        <button className="navbar-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
           <span></span>
           <span></span>
           <span></span>
         </button>
 
         <ul className={`navbar-menu ${menuOpen ? 'active' : ''}`}>
-          <li><Link to="/home">Home</Link></li>
-          <li><Link to="/markets">Markets</Link></li>
-          <li><Link to="/news">News</Link></li>
-          <li><Link to="/portfolio">Portfolio</Link></li>
-          <li><Link to="/watchlist">Watchlist</Link></li>
-          <li><Link to="/premium" className="premium-link">Premium</Link></li>
+          <li><Link to="/home" onClick={closeMenu}>Home</Link></li>
+          <li><Link to="/markets" onClick={closeMenu}>Markets</Link></li>
+          <li><Link to="/news" onClick={closeMenu}>News</Link></li>
+          <li><Link to="/portfolio" onClick={closeMenu}>Portfolio</Link></li>
+          <li><Link to="/watchlist" onClick={closeMenu}>Watchlist</Link></li>
+          <li><Link to="/premium" className="premium-link" onClick={closeMenu}>Premium</Link></li>
         </ul>
 
         <div className="navbar-actions">
           {isLoggedIn ? (
             <div className="user-menu">
-              <button className="user-btn" onClick={() => setUserMenuOpen(!userMenuOpen)}>
+              <button className="user-btn" onClick={() => setUserMenuOpen(!userMenuOpen)} aria-label="User menu">
                 <span className="user-icon">👤</span>
               </button>
               {userMenuOpen && (
                 <div className="user-dropdown">
-                  <Link to="/profile">Profile</Link>
-                  <Link to="/settings">Settings</Link>
+                  <Link to="/profile" onClick={closeUserMenu}>Profile</Link>
+                  <Link to="/settings" onClick={closeUserMenu}>Settings</Link>
                   <button onClick={handleLogout}>Logout</button>
                 </div>
               )}
             </div>
           ) : (
             <>
-              <Link to="/login" className="btn-login">Login</Link>
-              <Link to="/signup" className="btn-signup">Sign Up</Link>
+              <Link to="/login" className="btn-login" onClick={closeMenu}>Login</Link>
+              <Link to="/signup" className="btn-signup" onClick={closeMenu}>Sign Up</Link>
             </>
           )}
         </div>

@@ -1,3 +1,9 @@
+@Library('shared-library') _
+
+def getServiceList() {
+    return ['all', 'auth-service', 'market-data-service', 'news-service']
+}
+
 pipeline {
     agent any
     
@@ -14,22 +20,6 @@ pipeline {
         ECR_REPO = "fintechops-${params.ENVIRONMENT}"
         GIT_COMMIT_SHORT = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
         IMAGE_TAG = "${GIT_COMMIT_SHORT}-${BUILD_NUMBER}"
-    }
-    
-    @NonCPS
-    def getServiceList() {
-        def services = ['all']
-        try {
-            def workspace = new File('.')
-            workspace.eachDir { dir ->
-                if (dir.name.endsWith('-service')) {
-                    services.add(dir.name)
-                }
-            }
-        } catch (Exception e) {
-            services.addAll(['auth-service', 'market-data-service', 'news-service'])
-        }
-        return services
     }
     
     stages {

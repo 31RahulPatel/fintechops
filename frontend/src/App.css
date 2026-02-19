@@ -39,6 +39,9 @@ img {
 
 .App {
   min-height: 100vh;
+}
+
+.App.auth-layout {
   display: flex;
 }
 
@@ -235,7 +238,7 @@ input:focus {
 }
 
 @media (max-width: 768px) {
-  .App { 
+  .App.auth-layout { 
     flex-direction: column; 
   }
   

@@ -15,10 +15,10 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<Navigate to="/login" />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/confirm" element={<Confirm />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/login" element={<div className="auth-layout"><Login /></div>} />
+          <Route path="/signup" element={<div className="auth-layout"><Signup /></div>} />
+          <Route path="/confirm" element={<div className="auth-layout"><Confirm /></div>} />
+          <Route path="/dashboard" element={<div className="auth-layout"><Dashboard /></div>} />
           <Route path="/home" element={
             <ProtectedRoute>
               <Navbar />

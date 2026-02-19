@@ -1,0 +1,69 @@
+.indices-bar {
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-color);
+  padding: 15px 20px;
+  display: flex;
+  gap: 40px;
+  overflow-x: auto;
+  position: sticky;
+  top: 60px;
+  z-index: 999;
+  scrollbar-width: none;
+}
+
+.indices-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.index-item {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  white-space: nowrap;
+  padding: 10px 20px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 1px solid var(--border-color);
+}
+
+.index-item:hover {
+  background: var(--bg-secondary);
+  transform: translateY(-2px);
+}
+
+.index-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.index-value {
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--text-primary);
+}
+
+.index-change {
+  font-weight: 600;
+  font-size: 13px;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.positive {
+  color: var(--positive);
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.negative {
+  color: var(--negative);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+@media (max-width: 768px) {
+  .indices-bar {
+    gap: 20px;
+    padding: 15px;
+  }
+}

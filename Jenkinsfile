@@ -1,5 +1,3 @@
-@Library('shared-library') _
-
 def getServiceList() {
     return ['all', 'auth-service', 'market-data-service', 'news-service']
 }

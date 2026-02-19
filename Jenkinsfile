@@ -9,6 +9,7 @@ pipeline {
         choice(name: 'ENVIRONMENT', choices: ['dev', 'staging', 'prod'], description: 'Deployment environment')
         choice(name: 'SERVICE', choices: getServiceList(), description: 'Select service to deploy')
         booleanParam(name: 'SKIP_TESTS', defaultValue: false, description: 'Skip quality checks')
+        booleanParam(name: 'FORCE_DEPLOY', defaultValue: false, description: 'Force deployment even if quality gate fails')
     }
     
     environment {
@@ -17,7 +18,8 @@ pipeline {
         ECR_REGISTRY = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
         ECR_REPO = "fintechops-${params.ENVIRONMENT}"
         GIT_COMMIT_SHORT = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
-        IMAGE_TAG = "${GIT_COMMIT_SHORT}-${BUILD_NUMBER}"
+        BUILD_TIMESTAMP = sh(returnStdout: true, script: 'date +%Y%m%d-%H%M%S').trim()
+        IMAGE_TAG = "${GIT_COMMIT_SHORT}-${BUILD_TIMESTAMP}"
     }
     
     stages {
@@ -65,8 +67,16 @@ pipeline {
                                                 -Dsonar.sources=src
                                             """
                                         }
+                                        
+                                        timeout(time: 5, unit: 'MINUTES') {
+                                            def qg = waitForQualityGate()
+                                            if (qg.status != 'OK' && !params.FORCE_DEPLOY) {
+                                                error "Quality gate failed: ${qg.status}"
+                                            }
+                                        }
                                     } catch (Exception e) {
                                         echo "⚠️  Quality check skipped: ${e.message}"
+                                        if (!params.FORCE_DEPLOY) throw e
                                     }
                                 }
                                 
@@ -74,15 +84,23 @@ pipeline {
                                     docker build -t ${service}-backend:${IMAGE_TAG} \
                                     --build-arg NODE_ENV=${params.ENVIRONMENT} \
                                     --label service=${service} \
-                                    --label component=backend .
+                                    --label component=backend \
+                                    --label environment=${params.ENVIRONMENT} \
+                                    --label commit=${GIT_COMMIT_SHORT} \
+                                    --label build-date=${BUILD_TIMESTAMP} .
                                 """
                                 
                                 def trivyExitCode = params.ENVIRONMENT == 'prod' ? 1 : 0
                                 sh """
                                     docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+                                    -v \${WORKSPACE}:/reports \
                                     aquasec/trivy:latest image --severity HIGH,CRITICAL \
-                                    --exit-code ${trivyExitCode} ${service}-backend:${IMAGE_TAG}
+                                    --exit-code ${trivyExitCode} \
+                                    --format json \
+                                    --output /reports/trivy-${service}-backend.json \
+                                    ${service}-backend:${IMAGE_TAG}
                                 """
+                                archiveArtifacts artifacts: "trivy-${service}-backend.json", allowEmptyArchive: true
                             }
                         }
                         
@@ -99,24 +117,50 @@ pipeline {
                                                 -Dsonar.sources=src
                                             """
                                         }
+                                        
+                                        timeout(time: 5, unit: 'MINUTES') {
+                                            def qg = waitForQualityGate()
+                                            if (qg.status != 'OK' && !params.FORCE_DEPLOY) {
+                                                error "Quality gate failed: ${qg.status}"
+                                            }
+                                        }
                                     } catch (Exception e) {
                                         echo "⚠️  Quality check skipped: ${e.message}"
+                                        if (!params.FORCE_DEPLOY) throw e
+                                    }
+                                }
+                                
+                                def buildArgs = "--build-arg NODE_ENV=${params.ENVIRONMENT} --build-arg REACT_APP_ENV=${params.ENVIRONMENT}"
+                                if (fileExists(".env.${params.ENVIRONMENT}")) {
+                                    def envFile = readFile(".env.${params.ENVIRONMENT}")
+                                    envFile.split('\n').each { line ->
+                                        if (line && !line.startsWith('#')) {
+                                            buildArgs += " --build-arg ${line}"
+                                        }
                                     }
                                 }
                                 
                                 sh """
                                     docker build -t ${service}-frontend:${IMAGE_TAG} \
-                                    --build-arg NODE_ENV=${params.ENVIRONMENT} \
+                                    ${buildArgs} \
                                     --label service=${service} \
-                                    --label component=frontend .
+                                    --label component=frontend \
+                                    --label environment=${params.ENVIRONMENT} \
+                                    --label commit=${GIT_COMMIT_SHORT} \
+                                    --label build-date=${BUILD_TIMESTAMP} .
                                 """
                                 
                                 def trivyExitCode = params.ENVIRONMENT == 'prod' ? 1 : 0
                                 sh """
                                     docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+                                    -v \${WORKSPACE}:/reports \
                                     aquasec/trivy:latest image --severity HIGH,CRITICAL \
-                                    --exit-code ${trivyExitCode} ${service}-frontend:${IMAGE_TAG}
+                                    --exit-code ${trivyExitCode} \
+                                    --format json \
+                                    --output /reports/trivy-${service}-frontend.json \
+                                    ${service}-frontend:${IMAGE_TAG}
                                 """
+                                archiveArtifacts artifacts: "trivy-${service}-frontend.json", allowEmptyArchive: true
                             }
                         }
                         

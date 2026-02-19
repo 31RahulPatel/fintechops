@@ -1,0 +1,20 @@
+# Service Registry - Auto-discovered by Jenkins
+# Add new services here for custom configurations
+
+services:
+  auth-service:
+    backend: true
+    frontend: true
+    sonar: true
+    
+  market-data-service:
+    backend: true
+    frontend: false
+    sonar: true
+    
+  news-service:
+    backend: true
+    frontend: false
+    sonar: true
+
+# Future services auto-discovered - no pipeline changes needed

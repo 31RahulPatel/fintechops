@@ -14,7 +14,7 @@ pipeline {
     
     environment {
         AWS_REGION = 'ap-south-1'
-        AWS_ACCOUNT_ID = '339712742264'
+        AWS_ACCOUNT_ID = '196390795701'
         ECR_REGISTRY = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
         ECR_REPO = "fintechops-${params.ENVIRONMENT}"
         GIT_COMMIT_SHORT = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()

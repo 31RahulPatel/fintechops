@@ -59,92 +59,91 @@ pipeline {
                         stages["${service}"] = {
                             stage("Build ${service}") {
                                 checkout scm
-                                    
-                                    // Backend
-                                    if (fileExists("${service}/backend/Dockerfile")) {
-                                        dir("${service}/backend") {
-                                            // Quality check
-                                            if (!params.SKIP_TESTS && fileExists('src')) {
-                                                try {
-                                                    def scannerHome = tool 'SonarScanner'
-                                                    withSonarQubeEnv('SonarQube') {
-                                                        sh """
-                                                            ${scannerHome}/bin/sonar-scanner \
-                                                            -Dsonar.projectKey=${service}-backend \
-                                                            -Dsonar.sources=src
-                                                        """
-                                                    }
-                                                } catch (Exception e) {
-                                                    echo "⚠️  Quality check skipped: ${e.message}"
+                                
+                                // Backend
+                                if (fileExists("${service}/backend/Dockerfile")) {
+                                    dir("${service}/backend") {
+                                        // Quality check
+                                        if (!params.SKIP_TESTS && fileExists('src')) {
+                                            try {
+                                                def scannerHome = tool 'SonarScanner'
+                                                withSonarQubeEnv('SonarQube') {
+                                                    sh """
+                                                        ${scannerHome}/bin/sonar-scanner \
+                                                        -Dsonar.projectKey=${service}-backend \
+                                                        -Dsonar.sources=src
+                                                    """
                                                 }
+                                            } catch (Exception e) {
+                                                echo "⚠️  Quality check skipped: ${e.message}"
                                             }
-                                            
-                                            // Build
-                                            sh """
-                                                docker build -t ${service}-backend:${IMAGE_TAG} \
-                                                --build-arg NODE_ENV=${params.ENVIRONMENT} \
-                                                --label service=${service} \
-                                                --label component=backend \
-                                                .
-                                            """
-                                            
-                                            // Security scan
-                                            def trivyExitCode = params.ENVIRONMENT == 'prod' ? 1 : 0
-                                            sh """
-                                                docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-                                                aquasec/trivy:latest image --severity HIGH,CRITICAL \
-                                                --exit-code ${trivyExitCode} ${service}-backend:${IMAGE_TAG}
-                                            """
                                         }
+                                        
+                                        // Build
+                                        sh """
+                                            docker build -t ${service}-backend:${IMAGE_TAG} \
+                                            --build-arg NODE_ENV=${params.ENVIRONMENT} \
+                                            --label service=${service} \
+                                            --label component=backend \
+                                            .
+                                        """
+                                        
+                                        // Security scan
+                                        def trivyExitCode = params.ENVIRONMENT == 'prod' ? 1 : 0
+                                        sh """
+                                            docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+                                            aquasec/trivy:latest image --severity HIGH,CRITICAL \
+                                            --exit-code ${trivyExitCode} ${service}-backend:${IMAGE_TAG}
+                                        """
                                     }
-                                    
-                                    // Frontend
-                                    if (fileExists("${service}/frontend/Dockerfile")) {
-                                        dir("${service}/frontend") {
-                                            // Quality check
-                                            if (!params.SKIP_TESTS && fileExists('src')) {
-                                                try {
-                                                    def scannerHome = tool 'SonarScanner'
-                                                    withSonarQubeEnv('SonarQube') {
-                                                        sh """
-                                                            ${scannerHome}/bin/sonar-scanner \
-                                                            -Dsonar.projectKey=${service}-frontend \
-                                                            -Dsonar.sources=src
-                                                        """
-                                                    }
-                                                } catch (Exception e) {
-                                                    echo "⚠️  Quality check skipped: ${e.message}"
+                                }
+                                
+                                // Frontend
+                                if (fileExists("${service}/frontend/Dockerfile")) {
+                                    dir("${service}/frontend") {
+                                        // Quality check
+                                        if (!params.SKIP_TESTS && fileExists('src')) {
+                                            try {
+                                                def scannerHome = tool 'SonarScanner'
+                                                withSonarQubeEnv('SonarQube') {
+                                                    sh """
+                                                        ${scannerHome}/bin/sonar-scanner \
+                                                        -Dsonar.projectKey=${service}-frontend \
+                                                        -Dsonar.sources=src
+                                                    """
                                                 }
+                                            } catch (Exception e) {
+                                                echo "⚠️  Quality check skipped: ${e.message}"
                                             }
-                                            
-                                            // Build
-                                            def buildArgs = ""
-                                            if (fileExists(".env.${params.ENVIRONMENT}")) {
-                                                def envFile = readFile(".env.${params.ENVIRONMENT}")
-                                                envFile.split('\n').each { line ->
-                                                    if (line && !line.startsWith('#')) {
-                                                        buildArgs += " --build-arg ${line}"
-                                                    }
-                                                }
-                                            }
-                                            
-                                            sh """
-                                                docker build -t ${service}-frontend:${IMAGE_TAG} \
-                                                --build-arg NODE_ENV=${params.ENVIRONMENT} \
-                                                ${buildArgs} \
-                                                --label service=${service} \
-                                                --label component=frontend \
-                                                .
-                                            """
-                                            
-                                            // Security scan
-                                            def trivyExitCode = params.ENVIRONMENT == 'prod' ? 1 : 0
-                                            sh """
-                                                docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
-                                                aquasec/trivy:latest image --severity HIGH,CRITICAL \
-                                                --exit-code ${trivyExitCode} ${service}-frontend:${IMAGE_TAG}
-                                            """
                                         }
+                                        
+                                        // Build
+                                        def buildArgs = ""
+                                        if (fileExists(".env.${params.ENVIRONMENT}")) {
+                                            def envFile = readFile(".env.${params.ENVIRONMENT}")
+                                            envFile.split('\n').each { line ->
+                                                if (line && !line.startsWith('#')) {
+                                                    buildArgs += " --build-arg ${line}"
+                                                }
+                                            }
+                                        }
+                                        
+                                        sh """
+                                            docker build -t ${service}-frontend:${IMAGE_TAG} \
+                                            --build-arg NODE_ENV=${params.ENVIRONMENT} \
+                                            ${buildArgs} \
+                                            --label service=${service} \
+                                            --label component=frontend \
+                                            .
+                                        """
+                                        
+                                        // Security scan
+                                        def trivyExitCode = params.ENVIRONMENT == 'prod' ? 1 : 0
+                                        sh """
+                                            docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+                                            aquasec/trivy:latest image --severity HIGH,CRITICAL \
+                                            --exit-code ${trivyExitCode} ${service}-frontend:${IMAGE_TAG}
+                                        """
                                     }
                                 }
                             }

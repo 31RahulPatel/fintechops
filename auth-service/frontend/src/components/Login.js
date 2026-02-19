@@ -15,10 +15,11 @@ const Login = () => {
     setError('');
     try {
       const { data } = await api.post('/auth/login', { email, password });
+      localStorage.setItem('authToken', data.accessToken);
       localStorage.setItem('accessToken', data.accessToken);
       localStorage.setItem('idToken', data.idToken);
       localStorage.setItem('refreshToken', data.refreshToken);
-      navigate('/dashboard');
+      navigate('/home');
     } catch (err) {
       const errorMsg = err.response?.data?.error || err.message || 'Login failed';
       setError(errorMsg);

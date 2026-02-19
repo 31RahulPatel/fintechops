@@ -26,8 +26,11 @@ pipeline {
                     if (params.SERVICE == 'all') {
                         env.SERVICES = sh(
                             returnStdout: true,
-                            script: 'ls -d */ | grep -E "service$" | sed "s/\\///" | tr "\\n" " "'
+                            script: 'ls -d *-service/ 2>/dev/null | sed "s/\\///" | tr "\\n" " " || echo ""'
                         ).trim()
+                        if (!env.SERVICES) {
+                            error "No services found"
+                        }
                     } else {
                         env.SERVICES = params.SERVICE
                     }
@@ -50,9 +53,8 @@ pipeline {
                     
                     services.each { service ->
                         stages["${service}"] = {
-                            node {
-                                stage("Build ${service}") {
-                                    checkout scm
+                            stage("Build ${service}") {
+                                checkout scm
                                     
                                     // Backend
                                     if (fileExists("${service}/backend/Dockerfile")) {
@@ -83,10 +85,11 @@ pipeline {
                                             """
                                             
                                             // Security scan
+                                            def trivyExitCode = params.ENVIRONMENT == 'prod' ? 1 : 0
                                             sh """
                                                 docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
                                                 aquasec/trivy:latest image --severity HIGH,CRITICAL \
-                                                --exit-code 0 ${service}-backend:${IMAGE_TAG}
+                                                --exit-code ${trivyExitCode} ${service}-backend:${IMAGE_TAG}
                                             """
                                         }
                                     }
@@ -131,10 +134,11 @@ pipeline {
                                             """
                                             
                                             // Security scan
+                                            def trivyExitCode = params.ENVIRONMENT == 'prod' ? 1 : 0
                                             sh """
                                                 docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
                                                 aquasec/trivy:latest image --severity HIGH,CRITICAL \
-                                                --exit-code 0 ${service}-frontend:${IMAGE_TAG}
+                                                --exit-code ${trivyExitCode} ${service}-frontend:${IMAGE_TAG}
                                             """
                                         }
                                     }

@@ -14,6 +14,11 @@ const Home = () => {
   const [activeNewsTab, setActiveNewsTab] = useState('india');
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState('');
+  const [theme, setTheme] = useState('light');
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
 
   useEffect(() => {
     fetchData();
@@ -87,6 +92,28 @@ const Home = () => {
 
   return (
     <div className="home">
+      {/* Theme Toggle */}
+      <button 
+        onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+        style={{
+          position: 'fixed',
+          bottom: '30px',
+          right: '30px',
+          width: '60px',
+          height: '60px',
+          borderRadius: '50%',
+          border: '1px solid var(--border-color)',
+          background: 'var(--bg-card)',
+          cursor: 'pointer',
+          fontSize: '24px',
+          zIndex: 1000,
+          boxShadow: '0 4px 15px var(--shadow)',
+          transition: 'all 0.3s ease'
+        }}
+      >
+        {theme === 'light' ? '🌙' : '☀️'}
+      </button>
+
       {/* Live Market Indices Bar */}
       <div className="indices-bar">
         {indices.map((index) => (
@@ -100,10 +127,11 @@ const Home = () => {
         ))}
       </div>
 
-      {/* Two Column Layout */}
+      {/* Single Column Layout */}
       <div className="main-content">
-        {/* Left Column - News Feed */}
+        {/* News Section */}
         <div className="news-section">
+          <h2 className="section-title">Latest News</h2>
           <div className="news-tabs">
             {['india', 'global', 'tech', 'finance', 'politics', 'trending'].map(tab => (
               <button
@@ -131,8 +159,10 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Right Column - Stock Lists */}
+        {/* Stocks Section */}
         <div className="stocks-section">
+          <h2 className="section-title">Market Stocks</h2>
+          <div className="stock-grid">
           {/* Pro Stocks */}
           <div className="stock-list pro-stocks">
             <h3>🔒 Pro Stocks</h3>

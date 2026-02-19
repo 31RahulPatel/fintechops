@@ -3,13 +3,32 @@
 # FintechOps - Git Push Script
 # Pushes all new services and pipeline changes
 
+set -e  # Exit on error
+
 echo "🚀 FintechOps - Pushing to Git"
 echo "================================"
+
+# Check if on main branch
+CURRENT_BRANCH=$(git branch --show-current)
+if [ "$CURRENT_BRANCH" != "main" ]; then
+    echo "⚠️  Warning: You're on branch '$CURRENT_BRANCH', not 'main'"
+    read -p "Continue anyway? (y/n): " CONTINUE
+    if [ "$CONTINUE" != "y" ]; then
+        echo "Aborted."
+        exit 1
+    fi
+fi
 
 # Check git status
 echo ""
 echo "📊 Current Status:"
 git status --short
+
+# Check if there are changes
+if [ -z "$(git status --porcelain)" ]; then
+    echo "✅ No changes to commit"
+    exit 0
+fi
 
 # Add all changes
 echo ""
@@ -33,13 +52,16 @@ git commit -m "$COMMIT_MSG"
 # Push
 echo ""
 echo "🚀 Pushing to remote..."
-git push origin main
+git push origin "$CURRENT_BRANCH"
 
 echo ""
 echo "✅ Push complete!"
 echo ""
 echo "Next steps:"
-echo "1. Go to Jenkins"
-echo "2. Click 'Build with Parameters'"
-echo "3. Select SERVICE and ENVIRONMENT"
-echo "4. Click 'Build'"
+echo "1. Go to Jenkins: http://your-jenkins-url:8080"
+echo "2. Click 'Build with Parameters' on fintechops-cicd job"
+echo "3. Select SERVICE: market-data-service or news-service"
+echo "4. Select ENVIRONMENT: dev or prod"
+echo "5. Click 'Build'"
+echo ""
+echo "📊 Monitor build: http://your-jenkins-url:8080/job/fintechops-cicd/"

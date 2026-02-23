@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FaChartLine, FaCoins, FaHome, FaChartBar, FaMoneyBillWave, FaChartPie, FaUserTie, FaUniversity, FaBullseye, FaCreditCard, FaFlagCheckered, FaBoxes, FaBalanceScale, FaFolder, FaFileInvoiceDollar } from 'react-icons/fa';
 import CompoundInterestCalculator from '../components/calculators/CompoundInterestCalculator';
 import LumpsumCalculator from '../components/calculators/LumpsumCalculator';
 import InflationCalculator from '../components/calculators/InflationCalculator';
@@ -11,21 +12,21 @@ import { AssetAllocationCalculator, RiskRewardCalculator, PortfolioReturnCalcula
 import './Calculators.css';
 
 const calculatorsList = [
-  { id: 'sip', name: 'SIP Calculator', icon: '📈', description: 'Calculate returns on systematic investment' },
-  { id: 'compound', name: 'Compound Interest', icon: '💰', description: 'Calculate compound interest returns' },
-  { id: 'emi', name: 'EMI Calculator', icon: '🏠', description: 'Calculate loan EMI payments' },
-  { id: 'cagr', name: 'CAGR Calculator', icon: '📊', description: 'Calculate compound annual growth rate' },
-  { id: 'lumpsum', name: 'Lumpsum Investment', icon: '💵', description: 'Calculate one-time investment returns' },
-  { id: 'inflation', name: 'Inflation Calculator', icon: '📉', description: 'Calculate inflation impact' },
-  { id: 'retirement', name: 'Retirement Calculator', icon: '👴', description: 'Plan your retirement corpus' },
-  { id: 'ppf', name: 'PPF Calculator', icon: '🏦', description: 'Calculate PPF maturity amount' },
-  { id: 'nps', name: 'NPS Calculator', icon: '🎯', description: 'Calculate NPS pension returns' },
-  { id: 'swp', name: 'SWP Calculator', icon: '💳', description: 'Systematic withdrawal planning' },
-  { id: 'goal', name: 'Goal Planning', icon: '🎪', description: 'Plan for financial goals' },
-  { id: 'asset', name: 'Asset Allocation', icon: '📦', description: 'Allocate assets optimally' },
-  { id: 'risk', name: 'Risk-Reward Ratio', icon: '⚖️', description: 'Calculate trading risk-reward' },
-  { id: 'portfolio', name: 'Portfolio Return', icon: '📁', description: 'Calculate portfolio returns' },
-  { id: 'tax', name: 'Tax Calculator', icon: '🧾', description: 'Calculate income tax' }
+  { id: 'sip', name: 'SIP Calculator', icon: FaChartLine, description: 'Calculate returns on systematic investment' },
+  { id: 'compound', name: 'Compound Interest', icon: FaCoins, description: 'Calculate compound interest returns' },
+  { id: 'emi', name: 'EMI Calculator', icon: FaHome, description: 'Calculate loan EMI payments' },
+  { id: 'cagr', name: 'CAGR Calculator', icon: FaChartBar, description: 'Calculate compound annual growth rate' },
+  { id: 'lumpsum', name: 'Lumpsum Investment', icon: FaMoneyBillWave, description: 'Calculate one-time investment returns' },
+  { id: 'inflation', name: 'Inflation Calculator', icon: FaChartPie, description: 'Calculate inflation impact' },
+  { id: 'retirement', name: 'Retirement Calculator', icon: FaUserTie, description: 'Plan your retirement corpus' },
+  { id: 'ppf', name: 'PPF Calculator', icon: FaUniversity, description: 'Calculate PPF maturity amount' },
+  { id: 'nps', name: 'NPS Calculator', icon: FaBullseye, description: 'Calculate NPS pension returns' },
+  { id: 'swp', name: 'SWP Calculator', icon: FaCreditCard, description: 'Systematic withdrawal planning' },
+  { id: 'goal', name: 'Goal Planning', icon: FaFlagCheckered, description: 'Plan for financial goals' },
+  { id: 'asset', name: 'Asset Allocation', icon: FaBoxes, description: 'Allocate assets optimally' },
+  { id: 'risk', name: 'Risk-Reward Ratio', icon: FaBalanceScale, description: 'Calculate trading risk-reward' },
+  { id: 'portfolio', name: 'Portfolio Return', icon: FaFolder, description: 'Calculate portfolio returns' },
+  { id: 'tax', name: 'Tax Calculator', icon: FaFileInvoiceDollar, description: 'Calculate income tax' }
 ];
 
 const Calculators = () => {
@@ -61,14 +62,17 @@ const Calculators = () => {
 
       {!selectedCalculator ? (
         <div className="calculators-grid">
-          {calculatorsList.map(calc => (
-            <div key={calc.id} className="calculator-card" onClick={() => setSelectedCalculator(calc.id)}>
-              <div className="calc-icon">{calc.icon}</div>
-              <h3>{calc.name}</h3>
-              <p>{calc.description}</p>
-              <button className="calc-btn">Calculate →</button>
-            </div>
-          ))}
+          {calculatorsList.map(calc => {
+            const Icon = calc.icon;
+            return (
+              <div key={calc.id} className="calculator-card" onClick={() => setSelectedCalculator(calc.id)}>
+                <div className="calc-icon"><Icon /></div>
+                <h3>{calc.name}</h3>
+                <p>{calc.description}</p>
+                <button className="calc-btn">Calculate →</button>
+              </div>
+            );
+          })}
         </div>
       ) : (
         <div className="calculator-view">
@@ -104,7 +108,7 @@ const SIPCalculator = () => {
 
   return (
     <div className="calculator-form">
-      <h2>📈 SIP Calculator</h2>
+      <h2><FaChartLine /> SIP Calculator</h2>
       <div className="form-group">
         <label>Monthly Investment (₹)</label>
         <input type="number" value={monthlyInvestment} onChange={(e) => setMonthlyInvestment(Number(e.target.value))} />
@@ -163,7 +167,7 @@ const EMICalculator = () => {
 
   return (
     <div className="calculator-form">
-      <h2>🏠 EMI Calculator</h2>
+      <h2><FaHome /> EMI Calculator</h2>
       <div className="form-group">
         <label>Loan Amount (₹)</label>
         <input type="number" value={loanAmount} onChange={(e) => setLoanAmount(Number(e.target.value))} />
@@ -223,7 +227,7 @@ const CAGRCalculator = () => {
 
   return (
     <div className="calculator-form">
-      <h2>📊 CAGR Calculator</h2>
+      <h2><FaChartBar /> CAGR Calculator</h2>
       <div className="form-group">
         <label>Initial Investment (₹)</label>
         <input type="number" value={initialValue} onChange={(e) => setInitialValue(Number(e.target.value))} />

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FaCoins } from 'react-icons/fa';
 
 const CompoundInterestCalculator = () => {
   const [principal, setPrincipal] = useState(100000);
@@ -15,7 +16,7 @@ const CompoundInterestCalculator = () => {
 
   return (
     <div className="calculator-form">
-      <h2>💰 Compound Interest Calculator</h2>
+      <h2><FaCoins /> Compound Interest Calculator</h2>
       <div className="form-group">
         <label>Principal Amount (₹)</label>
         <input type="number" value={principal} onChange={(e) => setPrincipal(Number(e.target.value))} />

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FaCreditCard } from 'react-icons/fa';
 
 const SWPCalculator = () => {
   const [totalInvestment, setTotalInvestment] = useState(1000000);
@@ -28,7 +29,7 @@ const SWPCalculator = () => {
 
   return (
     <div className="calculator-form">
-      <h2>💳 SWP Calculator</h2>
+      <h2><FaCreditCard /> SWP Calculator</h2>
       <div className="form-group">
         <label>Total Investment (₹)</label>
         <input type="number" value={totalInvestment} onChange={(e) => setTotalInvestment(Number(e.target.value))} />

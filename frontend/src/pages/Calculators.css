@@ -48,6 +48,10 @@
 .calc-icon {
   font-size: 48px;
   margin-bottom: 20px;
+  color: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .calculator-card h3 {
@@ -129,6 +133,14 @@
   color: var(--text-primary);
   margin-bottom: 30px;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.calculator-form h2 svg {
+  font-size: 32px;
 }
 
 .form-group {

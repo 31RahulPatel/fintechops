@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FaChartPie } from 'react-icons/fa';
 
 const InflationCalculator = () => {
   const [currentCost, setCurrentCost] = useState(100000);
@@ -14,7 +15,7 @@ const InflationCalculator = () => {
 
   return (
     <div className="calculator-form">
-      <h2>📉 Inflation Calculator</h2>
+      <h2><FaChartPie /> Inflation Calculator</h2>
       <div className="form-group">
         <label>Current Cost (₹)</label>
         <input type="number" value={currentCost} onChange={(e) => setCurrentCost(Number(e.target.value))} />

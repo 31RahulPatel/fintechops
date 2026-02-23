@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FaBoxes, FaBalanceScale, FaFolder, FaFileInvoiceDollar } from 'react-icons/fa';
 
 export const AssetAllocationCalculator = () => {
   const [age, setAge] = useState(30);
@@ -34,7 +35,7 @@ export const AssetAllocationCalculator = () => {
 
   return (
     <div className="calculator-form">
-      <h2>📦 Asset Allocation Calculator</h2>
+      <h2><FaBoxes /> Asset Allocation Calculator</h2>
       <div className="form-group">
         <label>Your Age</label>
         <input type="number" value={age} onChange={(e) => setAge(Number(e.target.value))} />
@@ -96,7 +97,7 @@ export const RiskRewardCalculator = () => {
 
   return (
     <div className="calculator-form">
-      <h2>⚖️ Risk-Reward Ratio Calculator</h2>
+      <h2><FaBalanceScale /> Risk-Reward Ratio Calculator</h2>
       <div className="form-group">
         <label>Entry Price (₹)</label>
         <input type="number" value={entryPrice} onChange={(e) => setEntryPrice(Number(e.target.value))} />
@@ -160,7 +161,7 @@ export const PortfolioReturnCalculator = () => {
 
   return (
     <div className="calculator-form">
-      <h2>📁 Portfolio Return Calculator</h2>
+      <h2><FaFolder /> Portfolio Return Calculator</h2>
       <div className="form-group">
         <label>Initial Portfolio Value (₹)</label>
         <input type="number" value={initialValue} onChange={(e) => setInitialValue(Number(e.target.value))} />
@@ -238,7 +239,7 @@ export const TaxCalculator = () => {
 
   return (
     <div className="calculator-form">
-      <h2>🧾 Income Tax Calculator</h2>
+      <h2><FaFileInvoiceDollar /> Income Tax Calculator</h2>
       <div className="form-group">
         <label>Annual Income (₹)</label>
         <input type="number" value={income} onChange={(e) => setIncome(Number(e.target.value))} />

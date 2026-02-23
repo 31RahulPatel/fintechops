@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FaMoneyBillWave } from 'react-icons/fa';
 
 const LumpsumCalculator = () => {
   const [investment, setInvestment] = useState(100000);
@@ -14,7 +15,7 @@ const LumpsumCalculator = () => {
 
   return (
     <div className="calculator-form">
-      <h2>💵 Lumpsum Investment Calculator</h2>
+      <h2><FaMoneyBillWave /> Lumpsum Investment Calculator</h2>
       <div className="form-group">
         <label>Investment Amount (₹)</label>
         <input type="number" value={investment} onChange={(e) => setInvestment(Number(e.target.value))} />

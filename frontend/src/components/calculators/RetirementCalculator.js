@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FaUserTie } from 'react-icons/fa';
 
 const RetirementCalculator = () => {
   const [currentAge, setCurrentAge] = useState(30);
@@ -24,7 +25,7 @@ const RetirementCalculator = () => {
 
   return (
     <div className="calculator-form">
-      <h2>👴 Retirement Calculator</h2>
+      <h2><FaUserTie /> Retirement Calculator</h2>
       <div className="form-group">
         <label>Current Age</label>
         <input type="number" value={currentAge} onChange={(e) => setCurrentAge(Number(e.target.value))} />

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FaBullseye } from 'react-icons/fa';
 
 const NPSCalculator = () => {
   const [monthlyContribution, setMonthlyContribution] = useState(5000);
@@ -27,7 +28,7 @@ const NPSCalculator = () => {
 
   return (
     <div className="calculator-form">
-      <h2>🎯 NPS Calculator</h2>
+      <h2><FaBullseye /> NPS Calculator</h2>
       <div className="form-group">
         <label>Monthly Contribution (₹)</label>
         <input type="number" value={monthlyContribution} onChange={(e) => setMonthlyContribution(Number(e.target.value))} />

@@ -31,6 +31,9 @@
   font-size: 48px;
   margin-bottom: 20px;
   animation: float 3s ease-in-out infinite;
+  display: flex;
+  justify-content: center;
+  color: #fff;
 }
 
 @keyframes float {
@@ -79,6 +82,9 @@
 .input-icon {
   font-size: 20px;
   margin-right: 12px;
+  display: flex;
+  align-items: center;
+  color: #666;
 }
 
 .newsletter input {
@@ -132,7 +138,7 @@
   font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
 }
 
 @media (max-width: 768px) {

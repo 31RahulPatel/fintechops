@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FaChartLine, FaEnvelope, FaCheckCircle } from 'react-icons/fa';
 import './Newsletter.css';
 
 const Newsletter = () => {
@@ -12,12 +13,12 @@ const Newsletter = () => {
 
   return (
     <div className="newsletter">
-      <div className="newsletter-icon">📈</div>
+      <div className="newsletter-icon"><FaChartLine /></div>
       <h2>Stay Ahead of the Market</h2>
       <p>Get daily insights, market trends, and exclusive analysis delivered to your inbox</p>
       <form onSubmit={handleSubscribe}>
         <div className="input-wrapper">
-          <span className="input-icon">✉️</span>
+          <span className="input-icon"><FaEnvelope /></span>
           <input
             type="email"
             placeholder="Enter your email address"
@@ -29,9 +30,9 @@ const Newsletter = () => {
         </div>
       </form>
       <div className="newsletter-features">
-        <span>✓ Daily Market Reports</span>
-        <span>✓ Expert Analysis</span>
-        <span>✓ Exclusive Tips</span>
+        <span><FaCheckCircle /> Daily Market Reports</span>
+        <span><FaCheckCircle /> Expert Analysis</span>
+        <span><FaCheckCircle /> Exclusive Tips</span>
       </div>
     </div>
   );

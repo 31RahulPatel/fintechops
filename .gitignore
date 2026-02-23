@@ -31,5 +31,5 @@ Thumbs.db
 *.tar
 
 # Secrets - DO NOT COMMIT
-k8s/secrets.yaml
+# k8s/secrets.yaml  # Uncomment for production
 helm/fintechops/values.yaml

@@ -1,12 +1,50 @@
 const express = require('express');
 const cors = require('cors');
+const axios = require('axios');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const NEWS_API_KEY = process.env.NEWS_API_KEY || '1576eb55da0244a5a56f40813cbdde08';
 
 app.use(cors());
 app.use(express.json());
+
+const categoryMap = {
+  india: 'general',
+  global: 'business',
+  tech: 'technology',
+  finance: 'business',
+  politics: 'politics',
+  trending: 'general'
+};
+
+async function fetchNewsAPI(category) {
+  try {
+    const response = await axios.get('https://newsapi.org/v2/top-headlines', {
+      params: {
+        apiKey: NEWS_API_KEY,
+        country: 'in',
+        category: categoryMap[category] || 'general',
+        pageSize: 6
+      }
+    });
+    
+    if (response.data.status === 'ok') {
+      return response.data.articles.map((article, idx) => ({
+        id: idx + 1,
+        headline: article.title,
+        source: article.source.name,
+        time: new Date(article.publishedAt).toLocaleString(),
+        image: article.urlToImage || 'https://via.placeholder.com/300x200?text=News',
+        category: category
+      }));
+    }
+  } catch (error) {
+    console.error(`NewsAPI error for ${category}:`, error.message);
+  }
+  return null;
+}
 
 const newsData = {
   india: [
@@ -65,28 +103,34 @@ const newsData = {
   ]
 };
 
-app.get('/api/news/india', (req, res) => {
-  res.json({ success: true, data: newsData.india });
+app.get('/api/news/india', async (req, res) => {
+  const news = await fetchNewsAPI('india');
+  res.json({ success: true, data: news || newsData.india });
 });
 
-app.get('/api/news/global', (req, res) => {
-  res.json({ success: true, data: newsData.global });
+app.get('/api/news/global', async (req, res) => {
+  const news = await fetchNewsAPI('global');
+  res.json({ success: true, data: news || newsData.global });
 });
 
-app.get('/api/news/tech', (req, res) => {
-  res.json({ success: true, data: newsData.tech });
+app.get('/api/news/tech', async (req, res) => {
+  const news = await fetchNewsAPI('tech');
+  res.json({ success: true, data: news || newsData.tech });
 });
 
-app.get('/api/news/finance', (req, res) => {
-  res.json({ success: true, data: newsData.finance });
+app.get('/api/news/finance', async (req, res) => {
+  const news = await fetchNewsAPI('finance');
+  res.json({ success: true, data: news || newsData.finance });
 });
 
-app.get('/api/news/politics', (req, res) => {
-  res.json({ success: true, data: newsData.politics });
+app.get('/api/news/politics', async (req, res) => {
+  const news = await fetchNewsAPI('politics');
+  res.json({ success: true, data: news || newsData.politics });
 });
 
-app.get('/api/news/trending', (req, res) => {
-  res.json({ success: true, data: newsData.trending });
+app.get('/api/news/trending', async (req, res) => {
+  const news = await fetchNewsAPI('trending');
+  res.json({ success: true, data: news || newsData.trending });
 });
 
 app.get('/health', (req, res) => {
@@ -94,5 +138,5 @@ app.get('/health', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`News Service running on port ${PORT}`);
+  console.log(`✅ News Service running on port ${PORT}`);
 });

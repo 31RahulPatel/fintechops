@@ -66,7 +66,7 @@ const calculatorController = {
   saveCalculation: async (req, res) => {
     try {
       const { type, params, result } = req.body;
-      const userId = req.user.id;
+      const userId = req.user?.id || 'anonymous';
 
       const [result] = await pool.query(
         'INSERT INTO calculation_history (user_id, calculator_type, input_params, result) VALUES ($1, $2, $3, $4) RETURNING id',

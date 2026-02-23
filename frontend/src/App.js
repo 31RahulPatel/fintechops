@@ -6,6 +6,8 @@ import Confirm from './components/Auth/Confirm/Confirm';
 import Navbar from './components/Layout/Navbar/Navbar';
 import Home from './pages/Home';
 import Calculators from './pages/Calculators';
+import Stocks from './pages/Stocks/Stocks';
+import StockDetail from './pages/Stocks/StockDetail';
 import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 
@@ -27,7 +29,13 @@ function App() {
           <Route path="/markets" element={
             <ProtectedRoute>
               <Navbar />
-              <div style={{padding: '100px 20px', textAlign: 'center'}}>Markets Page - Coming Soon</div>
+              <Stocks />
+            </ProtectedRoute>
+          } />
+          <Route path="/stocks/:symbol" element={
+            <ProtectedRoute>
+              <Navbar />
+              <StockDetail />
             </ProtectedRoute>
           } />
           <Route path="/news" element={

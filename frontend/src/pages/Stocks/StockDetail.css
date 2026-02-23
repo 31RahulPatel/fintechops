@@ -1,0 +1,289 @@
+.stock-detail {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 20px 40px;
+}
+
+.stock-loading,
+.stock-error {
+  text-align: center;
+  padding: 100px 20px;
+  font-size: 18px;
+  color: #666;
+}
+
+.stock-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.stock-title h1 {
+  font-size: 32px;
+  font-weight: 800;
+  color: #000;
+  margin-bottom: 8px;
+}
+
+.stock-title p {
+  font-size: 16px;
+  color: #666;
+}
+
+.stock-price-section {
+  text-align: right;
+}
+
+.stock-price {
+  font-size: 36px;
+  font-weight: 800;
+  color: #000;
+  margin-bottom: 8px;
+}
+
+.stock-change {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  justify-content: flex-end;
+}
+
+.stock-change.positive {
+  color: #10b981;
+}
+
+.stock-change.negative {
+  color: #ef4444;
+}
+
+.chart-section {
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 30px;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.chart-header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.timeframe-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.timeframe-btn {
+  padding: 8px 16px;
+  border: 1px solid #e9ecef;
+  background: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s;
+  font-family: 'Poppins', sans-serif;
+}
+
+.timeframe-btn:hover {
+  background: #f8f9fa;
+}
+
+.timeframe-btn.active {
+  background: #000;
+  color: #fff;
+  border-color: #000;
+}
+
+.stock-stats {
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 30px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #666;
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #000;
+}
+
+.company-info {
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.company-info h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.company-description {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.company-details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.detail-item {
+  font-size: 14px;
+  color: #666;
+}
+
+.detail-item strong {
+  color: #000;
+  font-weight: 600;
+}
+
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .stock-detail {
+    padding: 70px 15px 30px;
+  }
+
+  .stock-header {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .stock-price-section {
+    text-align: left;
+  }
+
+  .stock-title h1 {
+    font-size: 24px;
+  }
+
+  .stock-price {
+    font-size: 28px;
+  }
+
+  .stock-change {
+    font-size: 16px;
+    justify-content: flex-start;
+  }
+
+  .chart-section {
+    padding: 16px;
+  }
+
+  .chart-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .timeframe-buttons {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .timeframe-btn {
+    flex: 1;
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .stat-value {
+    font-size: 16px;
+  }
+
+  .company-details {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .stock-detail {
+    padding: 70px 10px 20px;
+  }
+
+  .stock-title h1 {
+    font-size: 20px;
+  }
+
+  .stock-title p {
+    font-size: 14px;
+  }
+
+  .stock-price {
+    font-size: 24px;
+  }
+
+  .stock-change {
+    font-size: 14px;
+  }
+
+  .chart-section,
+  .stock-stats,
+  .company-info {
+    padding: 12px;
+  }
+
+  .timeframe-btn {
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+  }
+
+  .stat-value {
+    font-size: 14px;
+  }
+}

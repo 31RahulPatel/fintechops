@@ -1,75 +1,55 @@
 import axios from 'axios';
 
+const NEWS_API_KEY = process.env.REACT_APP_NEWS_API_KEY || 'demo';
+
 const fetchNews = async (category) => {
   try {
-    const response = await axios.get('https://gnews.io/api/v4/top-headlines', {
+    const categoryMap = {
+      india: { country: 'in', category: 'general' },
+      global: { country: 'us', category: 'general' },
+      tech: { country: 'in', category: 'technology' },
+      finance: { country: 'in', category: 'business' },
+      politics: { country: 'in', category: 'general' },
+      trending: { country: 'in', category: 'general' }
+    };
+
+    const params = categoryMap[category] || categoryMap.india;
+    
+    const response = await axios.get('https://newsapi.org/v2/top-headlines', {
       params: {
-        token: 'f8e8e8e8e8e8e8e8e8e8e8e8e8e8e8e8',
-        lang: 'en',
-        country: category === 'india' ? 'in' : 'us',
-        topic: category === 'tech' ? 'technology' : category === 'finance' ? 'business' : category === 'politics' ? 'nation' : 'breaking-news',
-        max: 10
+        apiKey: NEWS_API_KEY,
+        country: params.country,
+        category: params.category,
+        pageSize: 6
       }
     });
-    return { data: { data: response.data.articles || [] } };
+
+    const articles = (response.data.articles || []).map(article => ({
+      title: article.title,
+      description: article.description,
+      url: article.url,
+      image: article.urlToImage || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400',
+      publishedAt: article.publishedAt,
+      source: { name: article.source.name }
+    }));
+
+    return { data: { data: articles } };
   } catch (error) {
-    console.error('News API Error:', error);
-    // Fallback mock data
-    return { 
-      data: { 
-        data: [
-          {
-            title: 'Market reaches new highs amid positive sentiment',
-            description: 'Stock markets continue their upward trajectory',
-            url: '#',
-            image: 'https://via.placeholder.com/400x200/000/fff?text=Market+News',
-            publishedAt: new Date().toISOString(),
-            source: { name: 'Financial Times' }
-          },
-          {
-            title: 'Tech sector shows strong growth potential',
-            description: 'Technology companies report better than expected earnings',
-            url: '#',
-            image: 'https://via.placeholder.com/400x200/000/fff?text=Tech+News',
-            publishedAt: new Date().toISOString(),
-            source: { name: 'Tech Today' }
-          },
-          {
-            title: 'Global economy shows signs of recovery',
-            description: 'Economic indicators point to sustained growth',
-            url: '#',
-            image: 'https://via.placeholder.com/400x200/000/fff?text=Economy+News',
-            publishedAt: new Date().toISOString(),
-            source: { name: 'Economic Times' }
-          },
-          {
-            title: 'Investment opportunities in emerging markets',
-            description: 'Analysts highlight potential in developing economies',
-            url: '#',
-            image: 'https://via.placeholder.com/400x200/000/fff?text=Investment+News',
-            publishedAt: new Date().toISOString(),
-            source: { name: 'Investment Weekly' }
-          },
-          {
-            title: 'Banking sector announces new digital initiatives',
-            description: 'Major banks invest in fintech solutions',
-            url: '#',
-            image: 'https://via.placeholder.com/400x200/000/fff?text=Banking+News',
-            publishedAt: new Date().toISOString(),
-            source: { name: 'Banking News' }
-          },
-          {
-            title: 'Cryptocurrency market sees increased adoption',
-            description: 'Digital currencies gain mainstream acceptance',
-            url: '#',
-            image: 'https://via.placeholder.com/400x200/000/fff?text=Crypto+News',
-            publishedAt: new Date().toISOString(),
-            source: { name: 'Crypto Daily' }
-          }
-        ] 
-      } 
-    };
+    console.error('News API Error:', error.response?.data?.message || error.message);
+    return { data: { data: getMockNews(category) } };
   }
+};
+
+const getMockNews = (category) => {
+  const base = [
+    { title: 'Markets Hit Record High', description: 'Strong economic data', url: '#', image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400', publishedAt: new Date().toISOString(), source: { name: 'Economic Times' } },
+    { title: 'Tech Sector Shows Growth', description: 'Companies report earnings', url: '#', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400', publishedAt: new Date().toISOString(), source: { name: 'Tech News' } },
+    { title: 'Banking Sector Updates', description: 'Digital initiatives announced', url: '#', image: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=400', publishedAt: new Date().toISOString(), source: { name: 'Finance Today' } },
+    { title: 'Investment Opportunities', description: 'Analysts highlight potential', url: '#', image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400', publishedAt: new Date().toISOString(), source: { name: 'Investment Weekly' } },
+    { title: 'Startup Funding News', description: 'New investments announced', url: '#', image: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=400', publishedAt: new Date().toISOString(), source: { name: 'Startup News' } },
+    { title: 'Economic Indicators', description: 'Growth trends continue', url: '#', image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400', publishedAt: new Date().toISOString(), source: { name: 'Business Standard' } }
+  ];
+  return base;
 };
 
 export const getIndiaNews = () => fetchNews('india');

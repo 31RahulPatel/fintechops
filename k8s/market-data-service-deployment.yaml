@@ -21,6 +21,11 @@ spec:
         env:
         - name: PORT
           value: "4000"
+        - name: ALPHA_VANTAGE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: ALPHA_VANTAGE_KEY
         resources:
           requests:
             memory: "256Mi"

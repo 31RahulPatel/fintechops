@@ -1,0 +1,103 @@
+.stocks-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 20px 40px;
+}
+
+.stocks-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.stocks-header h1 {
+  font-size: 42px;
+  font-weight: 800;
+  color: #000;
+  margin-bottom: 12px;
+}
+
+.stocks-header p {
+  font-size: 18px;
+  color: #666;
+}
+
+.search-section {
+  margin-bottom: 60px;
+}
+
+.quick-links {
+  margin-top: 40px;
+}
+
+.quick-links h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #000;
+}
+
+.stock-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.stock-chip {
+  padding: 12px 24px;
+  background: #fff;
+  border: 2px solid #e9ecef;
+  border-radius: 24px;
+  text-decoration: none;
+  color: #000;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.stock-chip:hover {
+  background: #000;
+  color: #fff;
+  border-color: #000;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .stocks-page {
+    padding: 70px 15px 30px;
+  }
+
+  .stocks-header h1 {
+    font-size: 32px;
+  }
+
+  .stocks-header p {
+    font-size: 16px;
+  }
+
+  .quick-links h2 {
+    font-size: 20px;
+  }
+
+  .stock-chip {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stocks-page {
+    padding: 70px 10px 20px;
+  }
+
+  .stocks-header h1 {
+    font-size: 26px;
+  }
+
+  .stocks-header p {
+    font-size: 14px;
+  }
+
+  .stock-chip {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+}

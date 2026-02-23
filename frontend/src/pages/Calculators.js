@@ -138,9 +138,6 @@ const SIPCalculator = () => {
               <strong>₹{Number(result.futureValue).toLocaleString()}</strong>
             </div>
           </div>
-          <button className="save-btn" onClick={saveCalculation} disabled={saved}>
-            {saved ? '✓ Saved!' : '💾 Save Calculation'}
-          </button>
         </>
       )}
     </div>

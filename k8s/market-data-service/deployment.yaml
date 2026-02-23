@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: market-data-service
-        image: 196390795701.dkr.ecr.us-east-1.amazonaws.com/market-data-service:latest
+        image: 196390795701.dkr.ecr.ap-south-1.amazonaws.com/fintechops-dev:market-data-service-backend-latest
         ports:
         - containerPort: 4000
         env:

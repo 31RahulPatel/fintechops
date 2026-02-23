@@ -8,10 +8,7 @@ spec:
   source:
     repoURL: https://github.com/31RahulPatel/fintechops.git
     targetRevision: main
-    path: helm/fintechops
-    helm:
-      valueFiles:
-      - values.yaml
+    path: k8s
   destination:
     server: https://kubernetes.default.svc
     namespace: fintechops

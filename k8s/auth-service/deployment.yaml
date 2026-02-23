@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: auth-service
-        image: 196390795701.dkr.ecr.us-east-1.amazonaws.com/auth-service:latest
+        image: 196390795701.dkr.ecr.ap-south-1.amazonaws.com/fintechops-dev:auth-service-backend-latest
         ports:
         - containerPort: 3000
         env:
@@ -51,6 +51,8 @@ spec:
             secretKeyRef:
               name: app-secrets
               key: JWT_SECRET
+        - name: AWS_REGION
+          value: "us-east-1"
         - name: COGNITO_USER_POOL_ID
           valueFrom:
             secretKeyRef:

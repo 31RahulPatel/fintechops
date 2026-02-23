@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: news-service
-        image: 196390795701.dkr.ecr.us-east-1.amazonaws.com/news-service:latest
+        image: 196390795701.dkr.ecr.ap-south-1.amazonaws.com/fintechops-dev:news-service-backend-latest
         ports:
         - containerPort: 5000
         env:

@@ -228,6 +228,31 @@
   color: #ef4444;
 }
 
+.save-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+  margin-top: 15px;
+}
+
+.save-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.save-btn:disabled {
+  background: #6b7280;
+  cursor: not-allowed;
+}
+
 @media (max-width: 768px) {
   .calculators-header h1 {
     font-size: 32px;

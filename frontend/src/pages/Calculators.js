@@ -62,6 +62,7 @@ const SIPCalculator = () => {
   const [expectedReturn, setExpectedReturn] = useState(12);
   const [timePeriod, setTimePeriod] = useState(10);
   const [result, setResult] = useState(null);
+  const [saved, setSaved] = useState(false);
 
   const calculateSIP = () => {
     const monthlyRate = expectedReturn / 12 / 100;
@@ -75,6 +76,31 @@ const SIPCalculator = () => {
       invested: invested.toFixed(0),
       returns: returns.toFixed(0)
     });
+    setSaved(false);
+  };
+
+  const saveCalculation = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      const response = await fetch('/api/calculators/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          type: 'sip',
+          params: { monthlyInvestment, expectedReturn, timePeriod },
+          result
+        })
+      });
+      if (response.ok) {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+      }
+    } catch (error) {
+      console.error('Error saving calculation:', error);
+    }
   };
 
   return (
@@ -97,20 +123,25 @@ const SIPCalculator = () => {
       </div>
       <button className="calculate-btn" onClick={calculateSIP}>Calculate</button>
       {result && (
-        <div className="result-box">
-          <div className="result-item">
-            <span>Invested Amount</span>
-            <strong>₹{Number(result.invested).toLocaleString()}</strong>
+        <>
+          <div className="result-box">
+            <div className="result-item">
+              <span>Invested Amount</span>
+              <strong>₹{Number(result.invested).toLocaleString()}</strong>
+            </div>
+            <div className="result-item">
+              <span>Estimated Returns</span>
+              <strong className="positive">₹{Number(result.returns).toLocaleString()}</strong>
+            </div>
+            <div className="result-item total">
+              <span>Total Value</span>
+              <strong>₹{Number(result.futureValue).toLocaleString()}</strong>
+            </div>
           </div>
-          <div className="result-item">
-            <span>Estimated Returns</span>
-            <strong className="positive">₹{Number(result.returns).toLocaleString()}</strong>
-          </div>
-          <div className="result-item total">
-            <span>Total Value</span>
-            <strong>₹{Number(result.futureValue).toLocaleString()}</strong>
-          </div>
-        </div>
+          <button className="save-btn" onClick={saveCalculation} disabled={saved}>
+            {saved ? '✓ Saved!' : '💾 Save Calculation'}
+          </button>
+        </>
       )}
     </div>
   );

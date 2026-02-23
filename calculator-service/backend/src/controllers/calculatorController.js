@@ -68,12 +68,12 @@ const calculatorController = {
       const { type, params, result } = req.body;
       const userId = req.user.id;
 
-      const [rows] = await pool.query(
-        'INSERT INTO calculation_history (user_id, calculator_type, input_params, result) VALUES (?, ?, ?, ?)',
+      const [result] = await pool.query(
+        'INSERT INTO calculation_history (user_id, calculator_type, input_params, result) VALUES ($1, $2, $3, $4) RETURNING id',
         [userId, type, JSON.stringify(params), JSON.stringify(result)]
       );
 
-      res.json({ success: true, message: 'Calculation saved', id: rows.insertId });
+      res.json({ success: true, message: 'Calculation saved', id: result.rows[0].id });
     } catch (error) {
       res.status(500).json({ success: false, message: error.message });
     }
@@ -84,18 +84,18 @@ const calculatorController = {
       const userId = req.user.id;
       const { type } = req.query;
 
-      let query = 'SELECT * FROM calculation_history WHERE user_id = ?';
+      let query = 'SELECT * FROM calculation_history WHERE user_id = $1';
       const params = [userId];
 
       if (type) {
-        query += ' AND calculator_type = ?';
+        query += ' AND calculator_type = $2';
         params.push(type);
       }
 
       query += ' ORDER BY created_at DESC LIMIT 50';
 
-      const [rows] = await pool.query(query, params);
-      res.json({ success: true, data: rows });
+      const result = await pool.query(query, params);
+      res.json({ success: true, data: result.rows });
     } catch (error) {
       res.status(500).json({ success: false, message: error.message });
     }
@@ -106,7 +106,7 @@ const calculatorController = {
       const { id } = req.params;
       const userId = req.user.id;
 
-      await pool.query('DELETE FROM calculation_history WHERE id = ? AND user_id = ?', [id, userId]);
+      await pool.query('DELETE FROM calculation_history WHERE id = $1 AND user_id = $2', [id, userId]);
       res.json({ success: true, message: 'Calculation deleted' });
     } catch (error) {
       res.status(500).json({ success: false, message: error.message });

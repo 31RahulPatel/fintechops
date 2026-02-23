@@ -1,5 +1,5 @@
 def getServiceList() {
-    return ['all', 'auth-service', 'frontend', 'market-data-service', 'news-service']
+    return ['all', 'auth-service', 'frontend', 'market-data-service', 'news-service', 'calculator-service']
 }
 
 pipeline {
@@ -29,7 +29,7 @@ pipeline {
                     echo "🚀 Deployment: ${params.SERVICE} → ${params.ENVIRONMENT}"
                     
                     if (params.SERVICE == 'all') {
-                        env.SERVICES = 'auth-service frontend market-data-service news-service'
+                        env.SERVICES = 'auth-service frontend market-data-service news-service calculator-service'
                     } else {
                         env.SERVICES = params.SERVICE
                     }

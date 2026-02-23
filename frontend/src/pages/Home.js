@@ -20,6 +20,7 @@ const Home = () => {
   const [news, setNews] = useState([]);
   const [activeNewsTab, setActiveNewsTab] = useState('india');
   const [loading, setLoading] = useState(true);
+  const [newsLoading, setNewsLoading] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -64,6 +65,7 @@ const Home = () => {
   };
 
   const fetchNews = async (category) => {
+    setNewsLoading(true);
     try {
       let res;
       switch(category) {
@@ -75,9 +77,12 @@ const Home = () => {
         case 'trending': res = await getTrendingNews(); break;
         default: res = await getIndiaNews();
       }
-      setNews(res.data.data);
+      setNews(res.data.data || []);
     } catch (error) {
       console.error('Error fetching news:', error);
+      setNews([]);
+    } finally {
+      setNewsLoading(false);
     }
   };
 
@@ -93,7 +98,8 @@ const Home = () => {
         <NewsSection 
           news={news} 
           activeTab={activeNewsTab} 
-          onTabChange={setActiveNewsTab} 
+          onTabChange={setActiveNewsTab}
+          loading={newsLoading}
         />
         <StocksSection stocks={stocks} />
       </div>

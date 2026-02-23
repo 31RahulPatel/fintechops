@@ -1,7 +1,7 @@
 import React from 'react';
 import './NewsSection.css';
 
-const NewsSection = ({ news, activeTab, onTabChange }) => {
+const NewsSection = ({ news, activeTab, onTabChange, loading }) => {
   const tabs = ['india', 'global', 'tech', 'finance', 'politics', 'trending'];
 
   return (
@@ -18,20 +18,28 @@ const NewsSection = ({ news, activeTab, onTabChange }) => {
           </button>
         ))}
       </div>
-      <div className="news-feed">
-        {news.map(item => (
-          <div key={item.id} className="news-card">
-            <img src={item.image} alt={item.headline} />
-            <div className="news-content">
-              <h3>{item.headline}</h3>
-              <div className="news-meta">
-                <span className="news-source">{item.source}</span>
-                <span className="news-time">{item.time}</span>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+      {loading ? (
+        <div className="news-loading">Loading news...</div>
+      ) : (
+        <div className="news-feed">
+          {news.length > 0 ? (
+            news.slice(0, 6).map((item, index) => (
+              <a key={index} href={item.link || '#'} target="_blank" rel="noopener noreferrer" className="news-card">
+                {item.image_url && <img src={item.image_url} alt={item.title} onError={(e) => e.target.style.display = 'none'} />}
+                <div className="news-content">
+                  <h3>{item.title}</h3>
+                  <div className="news-meta">
+                    <span className="news-source">{item.source_id || 'News'}</span>
+                    <span className="news-time">{new Date(item.pubDate).toLocaleDateString()}</span>
+                  </div>
+                </div>
+              </a>
+            ))
+          ) : (
+            <div className="news-empty">No news available</div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

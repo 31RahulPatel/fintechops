@@ -43,6 +43,13 @@ spec:
             name: news-service
             port:
               number: 5000
+      - path: /api/calculators
+        pathType: Prefix
+        backend:
+          service:
+            name: calculator-service
+            port:
+              number: 6000
       - path: /
         pathType: Prefix
         backend:

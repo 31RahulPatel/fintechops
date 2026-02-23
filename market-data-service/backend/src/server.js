@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const { getIndices, getStocks } = require('./services/yahooFinance');
+const { getIndices, getStocks, getCommodities, getCurrencies } = require('./services/alphaVantage');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -26,6 +26,11 @@ app.get('/api/market/stocks', async (req, res) => {
       topNifty50: stocks.slice(0, 5),
       topGainers: stocks.filter(s => s.change > 0).slice(0, 5),
       topLosers: stocks.filter(s => s.change < 0).slice(0, 5),
+      topMutualFunds: [
+        { name: 'HDFC Flexi Cap Fund', nav: 856.45, returns1Y: 18.5, change: 0.85 },
+        { name: 'ICICI Prudential Bluechip', nav: 98.75, returns1Y: 16.2, change: 0.65 },
+        { name: 'SBI Large & Midcap Fund', nav: 245.30, returns1Y: 22.8, change: 1.15 }
+      ],
       proStocks: stocks.slice(0, 3)
     };
     res.json({ success: true, data });
@@ -34,22 +39,22 @@ app.get('/api/market/stocks', async (req, res) => {
   }
 });
 
-app.get('/api/market/commodities', (req, res) => {
-  const commodities = [
-    { name: 'Gold', symbol: 'GOLD', price: 62450, unit: '₹/10g', changePercent: 0.5 },
-    { name: 'Silver', symbol: 'SILVER', price: 74200, unit: '₹/kg', changePercent: -0.3 },
-    { name: 'Crude Oil', symbol: 'CRUDEOIL', price: 6845, unit: '₹/barrel', changePercent: 1.2 }
-  ];
-  res.json({ success: true, data: commodities });
+app.get('/api/market/commodities', async (req, res) => {
+  try {
+    const commodities = await getCommodities();
+    res.json({ success: true, data: commodities });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 });
 
-app.get('/api/market/currencies', (req, res) => {
-  const currencies = [
-    { name: 'USD/INR', symbol: 'USDINR', value: 83.25, changePercent: 0.15 },
-    { name: 'EUR/INR', symbol: 'EURINR', value: 90.45, changePercent: -0.08 },
-    { name: 'GBP/INR', symbol: 'GBPINR', value: 105.80, changePercent: 0.22 }
-  ];
-  res.json({ success: true, data: currencies });
+app.get('/api/market/currencies', async (req, res) => {
+  try {
+    const currencies = await getCurrencies();
+    res.json({ success: true, data: currencies });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 });
 
 app.get('/api/market/bonds', (req, res) => {

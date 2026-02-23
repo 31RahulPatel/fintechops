@@ -26,6 +26,16 @@ spec:
             secretKeyRef:
               name: app-secrets
               key: ALPHA_VANTAGE_KEY
+        - name: GROWW_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: GROWW_API_TOKEN
+        - name: GROWW_API_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: GROWW_API_SECRET
         resources:
           requests:
             memory: "256Mi"

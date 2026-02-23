@@ -47,8 +47,9 @@ const Calculators = () => {
             {selectedCalculator === 'sip' && <SIPCalculator />}
             {selectedCalculator === 'emi' && <EMICalculator />}
             {selectedCalculator === 'cagr' && <CAGRCalculator />}
-            {/* Add other calculators */}
-            <p className="coming-soon">Calculator interface coming in next step...</p>
+            {!['sip', 'emi', 'cagr'].includes(selectedCalculator) && (
+              <p className="coming-soon">Calculator interface coming soon...</p>
+            )}
           </div>
         </div>
       )}
@@ -56,8 +57,182 @@ const Calculators = () => {
   );
 };
 
-const SIPCalculator = () => <div>SIP Calculator Component</div>;
-const EMICalculator = () => <div>EMI Calculator Component</div>;
-const CAGRCalculator = () => <div>CAGR Calculator Component</div>;
+const SIPCalculator = () => {
+  const [monthlyInvestment, setMonthlyInvestment] = useState(5000);
+  const [expectedReturn, setExpectedReturn] = useState(12);
+  const [timePeriod, setTimePeriod] = useState(10);
+  const [result, setResult] = useState(null);
+
+  const calculateSIP = () => {
+    const monthlyRate = expectedReturn / 12 / 100;
+    const months = timePeriod * 12;
+    const futureValue = monthlyInvestment * (((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate));
+    const invested = monthlyInvestment * months;
+    const returns = futureValue - invested;
+    
+    setResult({
+      futureValue: futureValue.toFixed(0),
+      invested: invested.toFixed(0),
+      returns: returns.toFixed(0)
+    });
+  };
+
+  return (
+    <div className="calculator-form">
+      <h2>📈 SIP Calculator</h2>
+      <div className="form-group">
+        <label>Monthly Investment (₹)</label>
+        <input type="number" value={monthlyInvestment} onChange={(e) => setMonthlyInvestment(Number(e.target.value))} />
+        <input type="range" min="500" max="100000" step="500" value={monthlyInvestment} onChange={(e) => setMonthlyInvestment(Number(e.target.value))} />
+      </div>
+      <div className="form-group">
+        <label>Expected Return Rate (% p.a.)</label>
+        <input type="number" value={expectedReturn} onChange={(e) => setExpectedReturn(Number(e.target.value))} />
+        <input type="range" min="1" max="30" step="0.5" value={expectedReturn} onChange={(e) => setExpectedReturn(Number(e.target.value))} />
+      </div>
+      <div className="form-group">
+        <label>Time Period (Years)</label>
+        <input type="number" value={timePeriod} onChange={(e) => setTimePeriod(Number(e.target.value))} />
+        <input type="range" min="1" max="40" value={timePeriod} onChange={(e) => setTimePeriod(Number(e.target.value))} />
+      </div>
+      <button className="calculate-btn" onClick={calculateSIP}>Calculate</button>
+      {result && (
+        <div className="result-box">
+          <div className="result-item">
+            <span>Invested Amount</span>
+            <strong>₹{Number(result.invested).toLocaleString()}</strong>
+          </div>
+          <div className="result-item">
+            <span>Estimated Returns</span>
+            <strong className="positive">₹{Number(result.returns).toLocaleString()}</strong>
+          </div>
+          <div className="result-item total">
+            <span>Total Value</span>
+            <strong>₹{Number(result.futureValue).toLocaleString()}</strong>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const EMICalculator = () => {
+  const [loanAmount, setLoanAmount] = useState(1000000);
+  const [interestRate, setInterestRate] = useState(8.5);
+  const [tenure, setTenure] = useState(20);
+  const [result, setResult] = useState(null);
+
+  const calculateEMI = () => {
+    const monthlyRate = interestRate / 12 / 100;
+    const months = tenure * 12;
+    const emi = (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+    const totalAmount = emi * months;
+    const totalInterest = totalAmount - loanAmount;
+    
+    setResult({
+      emi: emi.toFixed(0),
+      totalAmount: totalAmount.toFixed(0),
+      totalInterest: totalInterest.toFixed(0)
+    });
+  };
+
+  return (
+    <div className="calculator-form">
+      <h2>🏠 EMI Calculator</h2>
+      <div className="form-group">
+        <label>Loan Amount (₹)</label>
+        <input type="number" value={loanAmount} onChange={(e) => setLoanAmount(Number(e.target.value))} />
+        <input type="range" min="100000" max="10000000" step="100000" value={loanAmount} onChange={(e) => setLoanAmount(Number(e.target.value))} />
+      </div>
+      <div className="form-group">
+        <label>Interest Rate (% p.a.)</label>
+        <input type="number" value={interestRate} onChange={(e) => setInterestRate(Number(e.target.value))} />
+        <input type="range" min="5" max="20" step="0.1" value={interestRate} onChange={(e) => setInterestRate(Number(e.target.value))} />
+      </div>
+      <div className="form-group">
+        <label>Loan Tenure (Years)</label>
+        <input type="number" value={tenure} onChange={(e) => setTenure(Number(e.target.value))} />
+        <input type="range" min="1" max="30" value={tenure} onChange={(e) => setTenure(Number(e.target.value))} />
+      </div>
+      <button className="calculate-btn" onClick={calculateEMI}>Calculate</button>
+      {result && (
+        <div className="result-box">
+          <div className="result-item total">
+            <span>Monthly EMI</span>
+            <strong>₹{Number(result.emi).toLocaleString()}</strong>
+          </div>
+          <div className="result-item">
+            <span>Principal Amount</span>
+            <strong>₹{Number(loanAmount).toLocaleString()}</strong>
+          </div>
+          <div className="result-item">
+            <span>Total Interest</span>
+            <strong className="negative">₹{Number(result.totalInterest).toLocaleString()}</strong>
+          </div>
+          <div className="result-item">
+            <span>Total Amount</span>
+            <strong>₹{Number(result.totalAmount).toLocaleString()}</strong>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const CAGRCalculator = () => {
+  const [initialValue, setInitialValue] = useState(100000);
+  const [finalValue, setFinalValue] = useState(200000);
+  const [duration, setDuration] = useState(5);
+  const [result, setResult] = useState(null);
+
+  const calculateCAGR = () => {
+    const cagr = (Math.pow(finalValue / initialValue, 1 / duration) - 1) * 100;
+    const absoluteReturn = ((finalValue - initialValue) / initialValue) * 100;
+    
+    setResult({
+      cagr: cagr.toFixed(2),
+      absoluteReturn: absoluteReturn.toFixed(2),
+      totalGain: (finalValue - initialValue).toFixed(0)
+    });
+  };
+
+  return (
+    <div className="calculator-form">
+      <h2>📊 CAGR Calculator</h2>
+      <div className="form-group">
+        <label>Initial Investment (₹)</label>
+        <input type="number" value={initialValue} onChange={(e) => setInitialValue(Number(e.target.value))} />
+        <input type="range" min="10000" max="10000000" step="10000" value={initialValue} onChange={(e) => setInitialValue(Number(e.target.value))} />
+      </div>
+      <div className="form-group">
+        <label>Final Value (₹)</label>
+        <input type="number" value={finalValue} onChange={(e) => setFinalValue(Number(e.target.value))} />
+        <input type="range" min="10000" max="10000000" step="10000" value={finalValue} onChange={(e) => setFinalValue(Number(e.target.value))} />
+      </div>
+      <div className="form-group">
+        <label>Duration (Years)</label>
+        <input type="number" value={duration} onChange={(e) => setDuration(Number(e.target.value))} />
+        <input type="range" min="1" max="30" value={duration} onChange={(e) => setDuration(Number(e.target.value))} />
+      </div>
+      <button className="calculate-btn" onClick={calculateCAGR}>Calculate</button>
+      {result && (
+        <div className="result-box">
+          <div className="result-item total">
+            <span>CAGR</span>
+            <strong className="positive">{result.cagr}%</strong>
+          </div>
+          <div className="result-item">
+            <span>Absolute Return</span>
+            <strong>{result.absoluteReturn}%</strong>
+          </div>
+          <div className="result-item">
+            <span>Total Gain</span>
+            <strong className="positive">₹{Number(result.totalGain).toLocaleString()}</strong>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default Calculators;

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: 196390795701.dkr.ecr.ap-south-1.amazonaws.com/fintechops-dev:auth-service-frontend-latest
+        image: 196390795701.dkr.ecr.ap-south-1.amazonaws.com/fintechops-dev:frontend-frontend-latest
         ports:
         - containerPort: 80
         resources:

@@ -42,7 +42,7 @@
 .calculator-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 15px 40px var(--shadow);
-  border-color: #3b82f6;
+  border-color: #000;
 }
 
 .calc-icon {
@@ -66,7 +66,7 @@
 
 .calc-btn {
   padding: 12px 28px;
-  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  background: #000;
   color: #fff;
   border: none;
   border-radius: 25px;
@@ -78,7 +78,7 @@
 
 .calc-btn:hover {
   transform: scale(1.05);
-  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+  background: #333;
 }
 
 .calculator-view {
@@ -166,7 +166,7 @@
 .calculate-btn {
   width: 100%;
   padding: 16px;
-  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  background: #000;
   color: #fff;
   border: none;
   border-radius: 12px;
@@ -180,7 +180,7 @@
 
 .calculate-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+  background: #333;
 }
 
 .result-box {
@@ -217,7 +217,7 @@
 
 .result-item.total strong {
   font-size: 24px;
-  color: #3b82f6;
+  color: #000;
 }
 
 .result-item strong.positive {
@@ -231,7 +231,7 @@
 .save-btn {
   width: 100%;
   padding: 14px;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: #10b981;
   color: #fff;
   border: none;
   border-radius: 12px;
@@ -245,7 +245,7 @@
 
 .save-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+  background: #059669;
 }
 
 .save-btn:disabled {
@@ -253,17 +253,37 @@
   cursor: not-allowed;
 }
 
+@media (max-width: 1024px) {
+  .calculators-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+  }
+}
+
 @media (max-width: 768px) {
+  .calculators-page {
+    padding: 70px 15px 30px;
+  }
+
   .calculators-header h1 {
     font-size: 32px;
   }
 
+  .calculators-header p {
+    font-size: 16px;
+  }
+
   .calculators-grid {
     grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .calculator-card {
+    padding: 25px;
   }
 
   .calculator-content {
-    padding: 20px;
+    padding: 25px;
   }
 
   .calculator-form h2 {
@@ -276,5 +296,101 @@
 
   .result-item.total strong {
     font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .calculators-page {
+    padding: 70px 10px 20px;
+  }
+
+  .calculators-header {
+    margin-bottom: 30px;
+  }
+
+  .calculators-header h1 {
+    font-size: 26px;
+  }
+
+  .calculators-header p {
+    font-size: 14px;
+  }
+
+  .calculator-card {
+    padding: 20px;
+  }
+
+  .calc-icon {
+    font-size: 40px;
+  }
+
+  .calculator-card h3 {
+    font-size: 18px;
+  }
+
+  .calculator-card p {
+    font-size: 13px;
+  }
+
+  .calc-btn {
+    padding: 10px 24px;
+    font-size: 14px;
+  }
+
+  .calculator-content {
+    padding: 20px;
+  }
+
+  .calculator-form h2 {
+    font-size: 20px;
+    margin-bottom: 25px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    font-size: 13px;
+  }
+
+  .form-group input[type="number"] {
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+
+  .calculate-btn {
+    padding: 14px;
+    font-size: 16px;
+  }
+
+  .result-box {
+    padding: 20px;
+  }
+
+  .result-item {
+    padding: 12px 0;
+  }
+
+  .result-item span {
+    font-size: 13px;
+  }
+
+  .result-item strong {
+    font-size: 16px;
+  }
+
+  .result-item.total strong {
+    font-size: 18px;
+  }
+
+  .save-btn {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .back-btn {
+    padding: 10px 20px;
+    font-size: 14px;
   }
 }

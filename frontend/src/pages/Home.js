@@ -20,11 +20,6 @@ const Home = () => {
   const [news, setNews] = useState([]);
   const [activeNewsTab, setActiveNewsTab] = useState('india');
   const [loading, setLoading] = useState(true);
-  const [theme, setTheme] = useState('light');
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-  }, [theme]);
 
   useEffect(() => {
     fetchData();
@@ -92,13 +87,6 @@ const Home = () => {
 
   return (
     <div className="home">
-      <button 
-        onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-        className="theme-toggle"
-      >
-        {theme === 'light' ? '🌙' : '☀️'}
-      </button>
-
       <IndicesBar indices={indices} />
 
       <div className="main-content">

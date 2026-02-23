@@ -1,4 +1,13 @@
 import React, { useState } from 'react';
+import CompoundInterestCalculator from '../components/calculators/CompoundInterestCalculator';
+import LumpsumCalculator from '../components/calculators/LumpsumCalculator';
+import InflationCalculator from '../components/calculators/InflationCalculator';
+import RetirementCalculator from '../components/calculators/RetirementCalculator';
+import PPFCalculator from '../components/calculators/PPFCalculator';
+import NPSCalculator from '../components/calculators/NPSCalculator';
+import SWPCalculator from '../components/calculators/SWPCalculator';
+import GoalPlanningCalculator from '../components/calculators/GoalPlanningCalculator';
+import { AssetAllocationCalculator, RiskRewardCalculator, PortfolioReturnCalculator, TaxCalculator } from '../components/calculators/OtherCalculators';
 import './Calculators.css';
 
 const calculatorsList = [
@@ -22,6 +31,27 @@ const calculatorsList = [
 const Calculators = () => {
   const [selectedCalculator, setSelectedCalculator] = useState(null);
 
+  const renderCalculator = () => {
+    switch(selectedCalculator) {
+      case 'sip': return <SIPCalculator />;
+      case 'compound': return <CompoundInterestCalculator />;
+      case 'emi': return <EMICalculator />;
+      case 'cagr': return <CAGRCalculator />;
+      case 'lumpsum': return <LumpsumCalculator />;
+      case 'inflation': return <InflationCalculator />;
+      case 'retirement': return <RetirementCalculator />;
+      case 'ppf': return <PPFCalculator />;
+      case 'nps': return <NPSCalculator />;
+      case 'swp': return <SWPCalculator />;
+      case 'goal': return <GoalPlanningCalculator />;
+      case 'asset': return <AssetAllocationCalculator />;
+      case 'risk': return <RiskRewardCalculator />;
+      case 'portfolio': return <PortfolioReturnCalculator />;
+      case 'tax': return <TaxCalculator />;
+      default: return null;
+    }
+  };
+
   return (
     <div className="calculators-page">
       <div className="calculators-header">
@@ -44,12 +74,7 @@ const Calculators = () => {
         <div className="calculator-view">
           <button className="back-btn" onClick={() => setSelectedCalculator(null)}>← Back to Calculators</button>
           <div className="calculator-content">
-            {selectedCalculator === 'sip' && <SIPCalculator />}
-            {selectedCalculator === 'emi' && <EMICalculator />}
-            {selectedCalculator === 'cagr' && <CAGRCalculator />}
-            {!['sip', 'emi', 'cagr'].includes(selectedCalculator) && (
-              <p className="coming-soon">Calculator interface coming soon...</p>
-            )}
+            {renderCalculator()}
           </div>
         </div>
       )}
@@ -62,7 +87,6 @@ const SIPCalculator = () => {
   const [expectedReturn, setExpectedReturn] = useState(12);
   const [timePeriod, setTimePeriod] = useState(10);
   const [result, setResult] = useState(null);
-  const [saved, setSaved] = useState(false);
 
   const calculateSIP = () => {
     const monthlyRate = expectedReturn / 12 / 100;
@@ -76,31 +100,6 @@ const SIPCalculator = () => {
       invested: invested.toFixed(0),
       returns: returns.toFixed(0)
     });
-    setSaved(false);
-  };
-
-  const saveCalculation = async () => {
-    try {
-      const token = localStorage.getItem('authToken');
-      const response = await fetch('/api/calculators/save', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          type: 'sip',
-          params: { monthlyInvestment, expectedReturn, timePeriod },
-          result
-        })
-      });
-      if (response.ok) {
-        setSaved(true);
-        setTimeout(() => setSaved(false), 3000);
-      }
-    } catch (error) {
-      console.error('Error saving calculation:', error);
-    }
   };
 
   return (
@@ -123,22 +122,20 @@ const SIPCalculator = () => {
       </div>
       <button className="calculate-btn" onClick={calculateSIP}>Calculate</button>
       {result && (
-        <>
-          <div className="result-box">
-            <div className="result-item">
-              <span>Invested Amount</span>
-              <strong>₹{Number(result.invested).toLocaleString()}</strong>
-            </div>
-            <div className="result-item">
-              <span>Estimated Returns</span>
-              <strong className="positive">₹{Number(result.returns).toLocaleString()}</strong>
-            </div>
-            <div className="result-item total">
-              <span>Total Value</span>
-              <strong>₹{Number(result.futureValue).toLocaleString()}</strong>
-            </div>
+        <div className="result-box">
+          <div className="result-item">
+            <span>Invested Amount</span>
+            <strong>₹{Number(result.invested).toLocaleString()}</strong>
           </div>
-        </>
+          <div className="result-item">
+            <span>Estimated Returns</span>
+            <strong className="positive">₹{Number(result.returns).toLocaleString()}</strong>
+          </div>
+          <div className="result-item total">
+            <span>Total Value</span>
+            <strong>₹{Number(result.futureValue).toLocaleString()}</strong>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -25,6 +25,7 @@
   transition: all 0.3s ease;
   cursor: pointer;
   border: 1px solid var(--border-color);
+  min-width: fit-content;
 }
 
 .index-item:hover {
@@ -61,9 +62,64 @@
   background: rgba(239, 68, 68, 0.1);
 }
 
+@media (max-width: 1024px) {
+  .indices-bar {
+    gap: 30px;
+    padding: 12px 15px;
+  }
+
+  .index-item {
+    padding: 8px 15px;
+    gap: 12px;
+  }
+}
+
 @media (max-width: 768px) {
   .indices-bar {
     gap: 20px;
-    padding: 15px;
+    padding: 12px 15px;
+  }
+
+  .index-item {
+    padding: 8px 12px;
+    gap: 10px;
+  }
+
+  .index-name {
+    font-size: 12px;
+  }
+
+  .index-value {
+    font-size: 16px;
+  }
+
+  .index-change {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .indices-bar {
+    gap: 15px;
+    padding: 10px 12px;
+  }
+
+  .index-item {
+    padding: 6px 10px;
+    gap: 8px;
+  }
+
+  .index-name {
+    font-size: 11px;
+  }
+
+  .index-value {
+    font-size: 14px;
+  }
+
+  .index-change {
+    font-size: 10px;
+    padding: 2px 6px;
   }
 }

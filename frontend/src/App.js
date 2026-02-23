@@ -1,10 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './components/Login';
-import Signup from './components/Signup';
-import Confirm from './components/Confirm';
-import Dashboard from './components/Dashboard';
-import Navbar from './components/Navbar';
+import Login from './components/Auth/Login/Login';
+import Signup from './components/Auth/Signup/Signup';
+import Confirm from './components/Auth/Confirm/Confirm';
+import Navbar from './components/Layout/Navbar/Navbar';
 import Home from './pages/Home';
 import Calculators from './pages/Calculators';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -19,7 +18,6 @@ function App() {
           <Route path="/login" element={<div className="auth-layout"><Login /></div>} />
           <Route path="/signup" element={<div className="auth-layout"><Signup /></div>} />
           <Route path="/confirm" element={<div className="auth-layout"><Confirm /></div>} />
-          <Route path="/dashboard" element={<div className="auth-layout"><Dashboard /></div>} />
           <Route path="/home" element={
             <ProtectedRoute>
               <Navbar />

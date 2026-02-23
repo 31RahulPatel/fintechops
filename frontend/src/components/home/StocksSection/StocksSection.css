@@ -108,8 +108,75 @@
   margin-top: 4px;
 }
 
+@media (max-width: 1024px) {
+  .stock-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
 @media (max-width: 768px) {
   .stock-grid {
     grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .stock-list {
+    padding: 15px;
+  }
+
+  .stock-list h3 {
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+
+  .stock-item {
+    padding: 12px 0;
+  }
+
+  .stock-symbol {
+    font-size: 14px;
+  }
+
+  .stock-name {
+    font-size: 11px;
+  }
+
+  .stock-price {
+    font-size: 15px;
+  }
+
+  .stock-change {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stock-list {
+    padding: 12px;
+  }
+
+  .stock-list h3 {
+    font-size: 15px;
+  }
+
+  .stock-item {
+    padding: 10px 0;
+  }
+
+  .stock-symbol {
+    font-size: 13px;
+  }
+
+  .stock-price {
+    font-size: 14px;
+  }
+
+  .stock-change {
+    font-size: 11px;
+  }
+
+  .premium-btn {
+    padding: 10px;
+    font-size: 14px;
   }
 }

@@ -1,0 +1,27 @@
+.password-input {
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 18px;
+  user-select: none;
+}
+
+@media (max-width: 768px) {
+  .toggle-password {
+    right: 12px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .toggle-password {
+    right: 10px;
+    font-size: 14px;
+  }
+}

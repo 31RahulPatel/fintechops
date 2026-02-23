@@ -1,9 +1,8 @@
 .footer {
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  background: #000;
   color: #fff;
   padding: 60px 20px 20px;
   margin-top: 60px;
-  border-radius: 7% 7% 0 0;
 }
 
 .footer-content {
@@ -18,10 +17,7 @@
 .footer-col h3 {
   font-size: 24px;
   margin-bottom: 15px;
-  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #fff;
 }
 
 .footer-col h4 {
@@ -48,7 +44,7 @@
 }
 
 .footer-col a:hover {
-  color: #3b82f6;
+  color: #fff;
   padding-left: 5px;
 }
 
@@ -56,6 +52,7 @@
   display: flex;
   gap: 15px;
   font-size: 24px;
+  flex-wrap: wrap;
 }
 
 .social-links a {
@@ -70,7 +67,8 @@
 }
 
 .social-links a:hover {
-  background: #3b82f6;
+  background: #fff;
+  color: #000;
   transform: translateY(-3px);
   padding-left: 0;
 }
@@ -108,18 +106,97 @@
   border: 1px solid rgba(255,255,255,0.1);
 }
 
+@media (max-width: 1024px) {
+  .footer-content {
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+}
+
 @media (max-width: 768px) {
+  .footer {
+    padding: 40px 15px 20px;
+    margin-top: 40px;
+  }
+
   .footer-content {
     grid-template-columns: 1fr;
     gap: 30px;
+    margin-bottom: 30px;
+  }
+
+  .footer-col h3 {
+    font-size: 20px;
+  }
+
+  .footer-col h4 {
+    font-size: 15px;
+  }
+
+  .footer-col p {
+    font-size: 13px;
+  }
+
+  .footer-col a {
+    font-size: 13px;
   }
 
   .footer-bottom {
     flex-direction: column;
     text-align: center;
+    padding-top: 20px;
   }
 
   .footer-badges {
     justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer {
+    padding: 30px 10px 15px;
+  }
+
+  .footer-content {
+    gap: 25px;
+  }
+
+  .footer-col h3 {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+
+  .footer-col h4 {
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+
+  .footer-col p {
+    font-size: 12px;
+    margin-bottom: 15px;
+  }
+
+  .footer-col a {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+
+  .social-links {
+    gap: 12px;
+  }
+
+  .social-links a {
+    width: 36px;
+    height: 36px;
+    font-size: 20px;
+  }
+
+  .footer-bottom p {
+    font-size: 12px;
+  }
+
+  .footer-badges span {
+    font-size: 11px;
+    padding: 5px 10px;
   }
 }

@@ -15,7 +15,7 @@
 
 .ipo-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 20px;
 }
 
@@ -77,12 +77,68 @@
   color: #fff;
 }
 
+@media (max-width: 1024px) {
+  .ipo-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
 @media (max-width: 768px) {
+  .ipo-section {
+    padding: 0 15px;
+  }
+
   .ipo-section h2 {
     font-size: 22px;
+    margin-bottom: 20px;
   }
 
   .ipo-grid {
     grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .ipo-card {
+    padding: 15px;
+  }
+
+  .ipo-card h3 {
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+
+  .ipo-row {
+    font-size: 13px;
+  }
+
+  .ipo-status {
+    top: 15px;
+    right: 15px;
+    padding: 5px 12px;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ipo-section {
+    padding: 0 10px;
+  }
+
+  .ipo-section h2 {
+    font-size: 20px;
+  }
+
+  .ipo-card {
+    padding: 12px;
+  }
+
+  .ipo-card h3 {
+    font-size: 15px;
+    padding-right: 80px;
+  }
+
+  .ipo-row {
+    font-size: 12px;
+    gap: 10px;
   }
 }

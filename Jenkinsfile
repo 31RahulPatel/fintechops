@@ -197,8 +197,19 @@ pipeline {
         stage('Cleanup') {
             steps {
                 sh """
-                    docker image prune -af --filter "until=168h" || true
-                    docker system prune -f --volumes || true
+                    # Remove old build images (keep last 3 builds per service)
+                    docker images --format '{{.Repository}}:{{.Tag}}' | \
+                    grep -E '(frontend|auth-service|market-data|news-service|calculator-service)' | \
+                    grep -v latest | \
+                    tail -n +10 | \
+                    xargs -r docker rmi -f || true
+                    
+                    # Prune dangling images (exclude jenkins, sonarqube, trivy)
+                    docker image prune -af --filter "until=24h" \
+                    --filter "label!=keep" || true
+                    
+                    # Clean up stopped containers and volumes
+                    docker container prune -f || true
                 """
             }
         }

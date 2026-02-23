@@ -24,13 +24,13 @@ const NewsSection = ({ news, activeTab, onTabChange, loading }) => {
         <div className="news-feed">
           {news.length > 0 ? (
             news.slice(0, 6).map((item, index) => (
-              <a key={index} href={item.link || '#'} target="_blank" rel="noopener noreferrer" className="news-card">
-                {item.image_url && <img src={item.image_url} alt={item.title} onError={(e) => e.target.style.display = 'none'} />}
+              <a key={index} href={item.url || '#'} target="_blank" rel="noopener noreferrer" className="news-card">
+                {item.image && <img src={item.image} alt={item.title} onError={(e) => e.target.style.display = 'none'} />}
                 <div className="news-content">
                   <h3>{item.title}</h3>
                   <div className="news-meta">
-                    <span className="news-source">{item.source_id || 'News'}</span>
-                    <span className="news-time">{new Date(item.pubDate).toLocaleDateString()}</span>
+                    <span className="news-source">{item.source?.name || 'News'}</span>
+                    <span className="news-time">{new Date(item.publishedAt).toLocaleDateString()}</span>
                   </div>
                 </div>
               </a>

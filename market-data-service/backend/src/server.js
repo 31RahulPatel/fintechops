@@ -9,204 +9,198 @@ const PORT = process.env.PORT || 4000;
 app.use(cors());
 app.use(express.json());
 
-// Alpha Vantage API (Free tier: 25 requests/day)
-const ALPHA_VANTAGE_KEY = process.env.ALPHA_VANTAGE_KEY || 'demo';
-const ALPHA_VANTAGE_URL = 'https://www.alphavantage.co/query';
+const GROWW_API_URL = 'https://api.groww.in/v1';
+const GROWW_TOKEN = process.env.GROWW_API_TOKEN || '';
 
-// Yahoo Finance Alternative (No API key needed)
-const YAHOO_FINANCE_URL = 'https://query1.finance.yahoo.com/v8/finance';
+const growwHeaders = {
+  'Accept': 'application/json',
+  'Authorization': `Bearer ${GROWW_TOKEN}`,
+  'X-API-VERSION': '1.0'
+};
 
-// Stock search with autocomplete
+// Stock search
 app.get('/api/market/search', async (req, res) => {
-  try {
-    const { q } = req.query;
-    if (!q || q.length < 2) {
-      return res.json({ success: true, data: [] });
-    }
-
-    const response = await axios.get(`${ALPHA_VANTAGE_URL}`, {
-      params: {
-        function: 'SYMBOL_SEARCH',
-        keywords: q,
-        apikey: ALPHA_VANTAGE_KEY
-      }
-    });
-
-    const results = (response.data.bestMatches || []).map(match => ({
-      symbol: match['1. symbol'],
-      name: match['2. name'],
-      type: match['3. type'],
-      region: match['4. region'],
-      currency: match['8. currency']
-    }));
-
-    res.json({ success: true, data: results });
-  } catch (error) {
-    res.json({ success: true, data: mockSearchResults(req.query.q) });
-  }
+  const { q } = req.query;
+  const stocks = [
+    { symbol: 'NSE_RELIANCE', name: 'Reliance Industries Ltd', type: 'Equity', region: 'India', currency: 'INR' },
+    { symbol: 'NSE_TCS', name: 'Tata Consultancy Services', type: 'Equity', region: 'India', currency: 'INR' },
+    { symbol: 'NSE_INFY', name: 'Infosys Ltd', type: 'Equity', region: 'India', currency: 'INR' },
+    { symbol: 'NSE_HDFCBANK', name: 'HDFC Bank Ltd', type: 'Equity', region: 'India', currency: 'INR' },
+    { symbol: 'NSE_ICICIBANK', name: 'ICICI Bank Ltd', type: 'Equity', region: 'India', currency: 'INR' },
+    { symbol: 'NSE_WIPRO', name: 'Wipro Ltd', type: 'Equity', region: 'India', currency: 'INR' },
+    { symbol: 'NSE_SBIN', name: 'State Bank of India', type: 'Equity', region: 'India', currency: 'INR' },
+    { symbol: 'NSE_BHARTIARTL', name: 'Bharti Airtel Ltd', type: 'Equity', region: 'India', currency: 'INR' }
+  ];
+  const results = q ? stocks.filter(s => s.name.toLowerCase().includes(q.toLowerCase()) || s.symbol.toLowerCase().includes(q.toLowerCase())) : stocks;
+  res.json({ success: true, data: results });
 });
 
-// Get stock quote (real-time)
+// Get stock quote (Groww API)
 app.get('/api/market/quote/:symbol', async (req, res) => {
   try {
     const { symbol } = req.params;
+    const [exchange, trading_symbol] = symbol.split('_');
     
-    const response = await axios.get(`${ALPHA_VANTAGE_URL}`, {
-      params: {
-        function: 'GLOBAL_QUOTE',
-        symbol: symbol,
-        apikey: ALPHA_VANTAGE_KEY
-      }
+    if (!GROWW_TOKEN) throw new Error('No token');
+    
+    const response = await axios.get(`${GROWW_API_URL}/live-data/quote`, {
+      params: { exchange, segment: 'CASH', trading_symbol },
+      headers: growwHeaders
     });
 
-    const quote = response.data['Global Quote'];
-    if (!quote || !quote['01. symbol']) {
-      throw new Error('No data');
+    if (response.data.status === 'SUCCESS') {
+      const payload = response.data.payload;
+      let ohlc = { open: 0, high: 0, low: 0, close: 0 };
+      if (payload.ohlc) {
+        try {
+          ohlc = JSON.parse(payload.ohlc.replace(/'/g, '"'));
+        } catch (e) {
+          console.error('OHLC parse error:', e);
+        }
+      }
+      const data = {
+        symbol,
+        price: payload.last_price,
+        change: payload.day_change,
+        changePercent: payload.day_change_perc,
+        volume: payload.volume,
+        open: ohlc.open,
+        high: ohlc.high,
+        low: ohlc.low,
+        previousClose: ohlc.close,
+        marketCap: payload.market_cap,
+        week52High: payload.week_52_high,
+        week52Low: payload.week_52_low,
+        latestTradingDay: new Date().toISOString().split('T')[0]
+      };
+      return res.json({ success: true, data });
     }
-
-    const data = {
-      symbol: quote['01. symbol'],
-      price: parseFloat(quote['05. price']),
-      change: parseFloat(quote['09. change']),
-      changePercent: parseFloat(quote['10. change percent'].replace('%', '')),
-      volume: parseInt(quote['06. volume']),
-      open: parseFloat(quote['02. open']),
-      high: parseFloat(quote['03. high']),
-      low: parseFloat(quote['04. low']),
-      previousClose: parseFloat(quote['08. previous close']),
-      latestTradingDay: quote['07. latest trading day']
-    };
-
-    res.json({ success: true, data });
+    throw new Error('API failed');
   } catch (error) {
     res.json({ success: true, data: mockStockQuote(req.params.symbol) });
   }
 });
 
-// Get historical data for charts
-app.get('/api/market/history/:symbol', async (req, res) => {
+// Get LTP for multiple stocks (up to 50 symbols)
+app.get('/api/market/ltp', async (req, res) => {
   try {
-    const { symbol } = req.params;
-    const { interval = 'daily' } = req.query;
-
-    const functionMap = {
-      '1min': 'TIME_SERIES_INTRADAY',
-      '5min': 'TIME_SERIES_INTRADAY',
-      'daily': 'TIME_SERIES_DAILY',
-      'weekly': 'TIME_SERIES_WEEKLY',
-      'monthly': 'TIME_SERIES_MONTHLY'
-    };
-
-    const params = {
-      function: functionMap[interval] || 'TIME_SERIES_DAILY',
-      symbol: symbol,
-      apikey: ALPHA_VANTAGE_KEY
-    };
-
-    if (interval.includes('min')) {
-      params.interval = interval;
-    }
-
-    const response = await axios.get(ALPHA_VANTAGE_URL, { params });
+    const { symbols } = req.query;
+    if (!symbols) return res.status(400).json({ error: 'Symbols required' });
+    if (!GROWW_TOKEN) throw new Error('No token');
     
-    const timeSeriesKey = Object.keys(response.data).find(key => key.includes('Time Series'));
-    const timeSeries = response.data[timeSeriesKey];
+    const response = await axios.get(`${GROWW_API_URL}/live-data/ltp`, {
+      params: { segment: 'CASH', exchange_symbols: symbols },
+      headers: growwHeaders
+    });
 
-    const data = Object.entries(timeSeries || {}).slice(0, 100).map(([date, values]) => ({
-      date,
-      open: parseFloat(values['1. open']),
-      high: parseFloat(values['2. high']),
-      low: parseFloat(values['3. low']),
-      close: parseFloat(values['4. close']),
-      volume: parseInt(values['5. volume'])
-    }));
-
-    res.json({ success: true, data });
+    if (response.data.status === 'SUCCESS') {
+      return res.json({ success: true, data: response.data.payload });
+    }
+    throw new Error('API failed');
   } catch (error) {
-    res.json({ success: true, data: mockHistoricalData(req.params.symbol) });
+    res.json({ success: true, data: {} });
   }
+});
+
+// Get OHLC for multiple stocks (up to 50 symbols)
+app.get('/api/market/ohlc', async (req, res) => {
+  try {
+    const { symbols } = req.query;
+    if (!symbols) return res.status(400).json({ error: 'Symbols required' });
+    if (!GROWW_TOKEN) throw new Error('No token');
+    
+    const response = await axios.get(`${GROWW_API_URL}/live-data/ohlc`, {
+      params: { segment: 'CASH', exchange_symbols: symbols },
+      headers: growwHeaders
+    });
+
+    if (response.data.status === 'SUCCESS') {
+      const parsed = {};
+      for (const [sym, ohlcStr] of Object.entries(response.data.payload)) {
+        try {
+          parsed[sym] = JSON.parse(ohlcStr.replace(/'/g, '"'));
+        } catch (e) {
+          parsed[sym] = ohlcStr;
+        }
+      }
+      return res.json({ success: true, data: parsed });
+    }
+    throw new Error('API failed');
+  } catch (error) {
+    res.json({ success: true, data: {} });
+  }
+});
+
+// Get historical data
+app.get('/api/market/history/:symbol', async (req, res) => {
+  const data = mockHistoricalData(req.params.symbol);
+  res.json({ success: true, data });
 });
 
 // Get company overview
 app.get('/api/market/company/:symbol', async (req, res) => {
-  try {
-    const { symbol } = req.params;
-    
-    const response = await axios.get(`${ALPHA_VANTAGE_URL}`, {
-      params: {
-        function: 'OVERVIEW',
-        symbol: symbol,
-        apikey: ALPHA_VANTAGE_KEY
-      }
-    });
-
-    const data = {
-      symbol: response.data.Symbol,
-      name: response.data.Name,
-      description: response.data.Description,
-      sector: response.data.Sector,
-      industry: response.data.Industry,
-      marketCap: response.data.MarketCapitalization,
-      peRatio: response.data.PERatio,
-      eps: response.data.EPS,
-      dividendYield: response.data.DividendYield,
-      week52High: response.data['52WeekHigh'],
-      week52Low: response.data['52WeekLow'],
-      beta: response.data.Beta,
-      profitMargin: response.data.ProfitMargin,
-      operatingMargin: response.data.OperatingMarginTTM
-    };
-
-    res.json({ success: true, data });
-  } catch (error) {
-    res.json({ success: true, data: mockCompanyOverview(req.params.symbol) });
-  }
+  const data = mockCompanyOverview(req.params.symbol);
+  res.json({ success: true, data });
 });
 
 // Market indices
 app.get('/api/market/indices', async (req, res) => {
+  try {
+    const symbols = 'NSE_NIFTY,BSE_SENSEX,NSE_BANKNIFTY,NSE_NIFTYIT';
+    const response = await axios.get(`${GROWW_API_URL}/live-data/ltp`, {
+      params: { segment: 'CASH', exchange_symbols: symbols },
+      headers: growwHeaders
+    });
+
+    if (response.data.status === 'SUCCESS') {
+      const payload = response.data.payload;
+      const indices = [
+        { name: 'NIFTY 50', symbol: 'NSE_NIFTY', value: payload.NSE_NIFTY || 23456.78, change: 145.32, changePercent: 0.62 },
+        { name: 'SENSEX', symbol: 'BSE_SENSEX', value: payload.BSE_SENSEX || 77234.56, change: 234.12, changePercent: 0.30 },
+        { name: 'NIFTY BANK', symbol: 'NSE_BANKNIFTY', value: payload.NSE_BANKNIFTY || 51234.45, change: -123.45, changePercent: -0.24 },
+        { name: 'NIFTY IT', symbol: 'NSE_NIFTYIT', value: payload.NSE_NIFTYIT || 34567.89, change: 234.56, changePercent: 0.68 }
+      ];
+      return res.json({ success: true, data: indices });
+    }
+  } catch (error) {
+    console.error('Indices error:', error.message);
+  }
+  
   const indices = [
-    { name: 'NIFTY 50', symbol: '^NSEI', value: 23456.78, change: 145.32, changePercent: 0.62 },
-    { name: 'SENSEX', symbol: '^BSESN', value: 77234.56, change: 234.12, changePercent: 0.30 },
-    { name: 'NIFTY BANK', symbol: '^NSEBANK', value: 51234.45, change: -123.45, changePercent: -0.24 },
-    { name: 'NIFTY IT', symbol: '^CNXIT', value: 34567.89, change: 234.56, changePercent: 0.68 }
+    { name: 'NIFTY 50', symbol: 'NSE_NIFTY', value: 23456.78, change: 145.32, changePercent: 0.62 },
+    { name: 'SENSEX', symbol: 'BSE_SENSEX', value: 77234.56, change: 234.12, changePercent: 0.30 },
+    { name: 'NIFTY BANK', symbol: 'NSE_BANKNIFTY', value: 51234.45, change: -123.45, changePercent: -0.24 },
+    { name: 'NIFTY IT', symbol: 'NSE_NIFTYIT', value: 34567.89, change: 234.56, changePercent: 0.68 }
   ];
   res.json({ success: true, data: indices });
 });
 
 // Top gainers/losers
-app.get('/api/market/movers', async (req, res) => {
+app.get('/api/market/movers', (req, res) => {
   const { type = 'gainers' } = req.query;
-  
   const gainers = [
-    { symbol: 'RELIANCE.NS', name: 'Reliance Industries', price: 2456.75, change: 89.45, changePercent: 3.78 },
-    { symbol: 'TCS.NS', name: 'Tata Consultancy Services', price: 3678.90, change: 112.30, changePercent: 3.15 },
-    { symbol: 'INFY.NS', name: 'Infosys', price: 1567.45, change: 45.67, changePercent: 3.00 }
+    { symbol: 'NSE_RELIANCE', name: 'Reliance Industries', price: 2456.75, change: 89.45, changePercent: 3.78 },
+    { symbol: 'NSE_TCS', name: 'TCS', price: 3678.90, change: 112.30, changePercent: 3.15 },
+    { symbol: 'NSE_INFY', name: 'Infosys', price: 1567.45, change: 45.67, changePercent: 3.00 }
   ];
-
   const losers = [
-    { symbol: 'HDFCBANK.NS', name: 'HDFC Bank', price: 1678.90, change: -45.67, changePercent: -2.65 },
-    { symbol: 'ICICIBANK.NS', name: 'ICICI Bank', price: 1123.45, change: -34.56, changePercent: -2.99 },
-    { symbol: 'AXISBANK.NS', name: 'Axis Bank', price: 1089.67, change: -28.90, changePercent: -2.58 }
+    { symbol: 'NSE_HDFCBANK', name: 'HDFC Bank', price: 1678.90, change: -45.67, changePercent: -2.65 },
+    { symbol: 'NSE_ICICIBANK', name: 'ICICI Bank', price: 1123.45, change: -34.56, changePercent: -2.99 }
   ];
-
   res.json({ success: true, data: type === 'gainers' ? gainers : losers });
 });
 
-// Stocks list
-app.get('/api/market/stocks', async (req, res) => {
+app.get('/api/market/stocks', (req, res) => {
   const stocks = {
     topGainers: [
-      { symbol: 'RELIANCE.NS', name: 'Reliance Industries', price: 2456.75, change: 89.45, changePercent: 3.78 },
-      { symbol: 'TCS.NS', name: 'Tata Consultancy Services', price: 3678.90, change: 112.30, changePercent: 3.15 }
+      { symbol: 'NSE_RELIANCE', name: 'Reliance', price: 2456.75, change: 89.45, changePercent: 3.78 },
+      { symbol: 'NSE_TCS', name: 'TCS', price: 3678.90, change: 112.30, changePercent: 3.15 }
     ],
     topLosers: [
-      { symbol: 'HDFCBANK.NS', name: 'HDFC Bank', price: 1678.90, change: -45.67, changePercent: -2.65 },
-      { symbol: 'ICICIBANK.NS', name: 'ICICI Bank', price: 1123.45, change: -34.56, changePercent: -2.99 }
+      { symbol: 'NSE_HDFCBANK', name: 'HDFC Bank', price: 1678.90, change: -45.67, changePercent: -2.65 }
     ],
     topNifty50: [
-      { symbol: 'RELIANCE.NS', name: 'Reliance Industries', price: 2456.75, change: 89.45, changePercent: 3.78 },
-      { symbol: 'TCS.NS', name: 'TCS', price: 3678.90, change: 112.30, changePercent: 3.15 }
+      { symbol: 'NSE_RELIANCE', name: 'Reliance', price: 2456.75, change: 89.45, changePercent: 3.78 }
     ]
   };
   res.json({ success: true, data: stocks });
@@ -222,39 +216,24 @@ app.get('/api/market/commodities', (req, res) => {
 
 app.get('/api/market/currencies', (req, res) => {
   const currencies = [
-    { name: 'USD/INR', symbol: 'USDINR', price: 83.45, change: 0.12, changePercent: 0.14 },
-    { name: 'EUR/INR', symbol: 'EURINR', price: 90.23, change: -0.34, changePercent: -0.38 }
+    { name: 'USD/INR', symbol: 'USDINR', price: 83.45, change: 0.12, changePercent: 0.14 }
   ];
   res.json({ success: true, data: currencies });
 });
 
 app.get('/api/market/bonds', (req, res) => {
-  const bonds = [
-    { name: '10Y Govt Bond', symbol: 'IN10Y', yield: 7.15, change: 0.05 }
-  ];
+  const bonds = [{ name: '10Y Govt Bond', symbol: 'IN10Y', yield: 7.15, change: 0.05 }];
   res.json({ success: true, data: bonds });
 });
 
 app.get('/api/market/ipos', (req, res) => {
-  const ipos = [
-    { company: 'TechVision Solutions', priceRange: '₹450-475', openDate: '2026-02-15', closeDate: '2026-02-18', subscription: '12.5x', status: 'Open' }
-  ];
+  const ipos = [{ company: 'TechVision Solutions', priceRange: '₹450-475', openDate: '2026-02-15', closeDate: '2026-02-18', subscription: '12.5x', status: 'Open' }];
   res.json({ success: true, data: ipos });
 });
 
 app.get('/health', (req, res) => {
   res.json({ status: 'healthy', service: 'market-data-service' });
 });
-
-// Mock data functions
-function mockSearchResults(query) {
-  const stocks = [
-    { symbol: 'RELIANCE.NS', name: 'Reliance Industries Ltd', type: 'Equity', region: 'India', currency: 'INR' },
-    { symbol: 'TCS.NS', name: 'Tata Consultancy Services', type: 'Equity', region: 'India', currency: 'INR' },
-    { symbol: 'INFY.NS', name: 'Infosys Ltd', type: 'Equity', region: 'India', currency: 'INR' }
-  ];
-  return stocks.filter(s => s.name.toLowerCase().includes(query.toLowerCase()) || s.symbol.toLowerCase().includes(query.toLowerCase()));
-}
 
 function mockStockQuote(symbol) {
   return {
@@ -293,8 +272,8 @@ function mockHistoricalData(symbol) {
 function mockCompanyOverview(symbol) {
   return {
     symbol,
-    name: 'Sample Company Ltd',
-    description: 'Leading company in its sector',
+    name: symbol.split('_')[1] + ' Ltd',
+    description: 'Leading Indian company',
     sector: 'Technology',
     industry: 'Software',
     marketCap: '1500000000000',

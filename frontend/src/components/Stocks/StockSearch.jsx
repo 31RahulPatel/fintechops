@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './StockSearch.css';
 
-const StockSearch = () => {
+const StockSearch = ({ onSelect }) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -47,7 +47,11 @@ const StockSearch = () => {
   }, [query]);
 
   const handleSelect = (symbol) => {
-    navigate(`/stocks/${symbol}`);
+    if (onSelect) {
+      onSelect(symbol);
+    } else {
+      navigate(`/stocks/${symbol}`);
+    }
     setQuery('');
     setShowResults(false);
   };

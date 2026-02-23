@@ -22,7 +22,7 @@ const Navbar = () => {
       <div className="navbar-container">
         <Link to="/home" className="navbar-logo" onClick={closeMenu}>FintechOps</Link>
         
-        <button className="navbar-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
+        <button className={`navbar-toggle ${menuOpen ? 'active' : ''}`} onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
           <span></span>
           <span></span>
           <span></span>

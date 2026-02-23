@@ -189,6 +189,7 @@
   cursor: pointer;
   padding: 8px;
   transition: all 0.3s ease;
+  z-index: 1001;
 }
 
 .navbar-toggle span {
@@ -199,12 +200,16 @@
   transition: all 0.3s ease;
 }
 
-.navbar-toggle:hover span {
-  background: #333;
+.navbar-toggle.active span:nth-child(1) {
+  transform: rotate(45deg) translate(8px, 8px);
 }
 
-.navbar-toggle:active {
-  opacity: 0.7;
+.navbar-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.navbar-toggle.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
 }
 
 @media (max-width: 1024px) {
@@ -225,24 +230,32 @@
 
   .navbar-logo {
     font-size: 22px;
+    z-index: 1001;
   }
 
   .navbar-menu {
-    position: absolute;
-    top: 60px;
-    left: 0;
-    right: 0;
-    background: #ffffff;
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 280px;
+    height: 100vh;
+    background: #fff;
     flex-direction: column;
-    padding: 20px;
+    padding: 80px 20px 20px;
     gap: 0;
-    display: none;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-    border-bottom: 1px solid #e9ecef;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    transition: left 0.3s ease;
+    overflow-y: auto;
+    z-index: 1000;
+  }
+
+  .navbar-menu.active {
+    left: 0;
   }
 
   .navbar-menu li {
     border-bottom: 1px solid #f8f9fa;
+    width: 100%;
   }
 
   .navbar-menu li:last-child {
@@ -251,16 +264,13 @@
 
   .navbar-menu li a {
     display: block;
-    padding: 15px 0;
+    padding: 18px 0;
     font-size: 16px;
+    width: 100%;
   }
 
   .navbar-menu li a::after {
     display: none;
-  }
-
-  .navbar-menu.active {
-    display: flex;
   }
 
   .navbar-toggle {
@@ -269,6 +279,7 @@
 
   .navbar-actions {
     gap: 10px;
+    z-index: 1001;
   }
 
   .btn-login, .btn-signup {
@@ -283,6 +294,18 @@
 
   .user-dropdown {
     top: 50px;
+  }
+
+  /* Overlay */
+  .navbar-menu.active::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 280px;
+    width: calc(100vw - 280px);
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+    z-index: -1;
   }
 }
 

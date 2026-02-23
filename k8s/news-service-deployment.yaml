@@ -21,6 +21,11 @@ spec:
         env:
         - name: PORT
           value: "5000"
+        - name: NEWS_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: NEWS_API_KEY
         resources:
           requests:
             memory: "256Mi"

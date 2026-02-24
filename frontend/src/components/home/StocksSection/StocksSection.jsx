@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaLock } from 'react-icons/fa';
 import './StocksSection.css';
 
 const StocksSection = ({ stocks }) => {
@@ -7,7 +8,7 @@ const StocksSection = ({ stocks }) => {
       <h2 className="section-title">Market Stocks</h2>
       <div className="stock-grid">
         <div className="stock-list pro-stocks">
-          <h3>🔒 Pro Stocks</h3>
+          <h3><FaLock /> Pro Stocks</h3>
           <div className="pro-blur">
             {stocks.proStocks?.slice(0, 3).map(stock => (
               <div key={stock.symbol} className="stock-item">

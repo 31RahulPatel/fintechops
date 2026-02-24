@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaTwitter, FaLinkedin, FaFacebook, FaInstagram, FaYoutube, FaLock, FaCheckCircle, FaBolt } from 'react-icons/fa';
 import './Footer.css';
 
 const Footer = () => {
@@ -9,11 +10,11 @@ const Footer = () => {
           <h3>FintechOps</h3>
           <p>Your trusted platform for real-time market data, news, and financial insights.</p>
           <div className="social-links">
-            <a href="#" aria-label="Twitter">🐦</a>
-            <a href="#" aria-label="LinkedIn">💼</a>
-            <a href="#" aria-label="Facebook">📘</a>
-            <a href="#" aria-label="Instagram">📷</a>
-            <a href="#" aria-label="YouTube">📺</a>
+            <a href="#" aria-label="Twitter"><FaTwitter /></a>
+            <a href="#" aria-label="LinkedIn"><FaLinkedin /></a>
+            <a href="#" aria-label="Facebook"><FaFacebook /></a>
+            <a href="#" aria-label="Instagram"><FaInstagram /></a>
+            <a href="#" aria-label="YouTube"><FaYoutube /></a>
           </div>
         </div>
         <div className="footer-col">
@@ -52,9 +53,9 @@ const Footer = () => {
       <div className="footer-bottom">
         <p>© 2026 FintechOps. All rights reserved. | Market data delayed by 15 minutes.</p>
         <div className="footer-badges">
-          <span>🔒 SSL Secured</span>
-          <span>✓ ISO Certified</span>
-          <span>⚡ 99.9% Uptime</span>
+          <span><FaLock /> SSL Secured</span>
+          <span><FaCheckCircle /> ISO Certified</span>
+          <span><FaBolt /> 99.9% Uptime</span>
         </div>
       </div>
     </footer>

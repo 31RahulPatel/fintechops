@@ -9,6 +9,7 @@ import Calculators from './pages/Calculators';
 import Stocks from './pages/Stocks/Stocks';
 import StockDetail from './pages/Stocks/StockDetail';
 import Watchlist from './pages/Watchlist/Watchlist';
+import Profile from './pages/Profile/Profile';
 import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 
@@ -67,6 +68,12 @@ function App() {
             <ProtectedRoute>
               <Navbar />
               <div style={{padding: '100px 20px', textAlign: 'center'}}>Premium Page - Coming Soon</div>
+            </ProtectedRoute>
+          } />
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <Navbar />
+              <Profile />
             </ProtectedRoute>
           } />
         </Routes>
